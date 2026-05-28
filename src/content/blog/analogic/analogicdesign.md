@@ -4,6 +4,7 @@ description: 'A curricular notebook.'
 publishDate: '2026-05-27 11:52:00'
 tags:
   - Analog IC
+heroImage: { src: './images.jpg', color: '#0fdb0f', width: 400, height: 500 }
 ---
 > 写在前面：
 >
