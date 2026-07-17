@@ -31,6 +31,7 @@
     "astro-pure": "^1.4.2",
     "d3": "^7.9.0",
     "katex": "^0.16.33",
+    "openmeteo": "^1.2.3",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "sharp": "^0.34.5",
