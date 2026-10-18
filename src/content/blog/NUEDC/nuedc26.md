@@ -5,8 +5,11 @@ publishDate: '2026-07-17 17:10:00'
 tags:
   - 电赛
   - Southeast University
+draft: false
+comment: true
 ---
 # 项目概要
+
 # 坠机过程
 暑假的第二轮训练从上周二7号开始，下午发题，昨天下午验收，一共十天时间，差不多可以排下三个四天三夜。
 不出所料，看到题目的瞬间就头皮发麻：
