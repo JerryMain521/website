@@ -4,11 +4,13 @@ description: 'The first description file.'
 publishDate: '2026-04-21 17:17:28'
 tags:
   - README
+draft: false
+comment: true
 ---
 
 人类著名构史学家*JerryMin*曾经说过：
 
->这个Astro模板是我目前见过最舒适的模板了！
+>这个Astro模板 (https://github.com/cworld1/astro-theme-pure) 是我目前见过最舒适的模板了！
 
 *JerryMin*对这个网页爱不释手，他不仅立flag说要频繁更新~~开始画饼~~，也希望给想要基于此模板进行客制化的各位提供一种方案~~又画一张~~，以及试图以最简单的方式，说明对原项目做了哪些更改以及更改的方式。
 
