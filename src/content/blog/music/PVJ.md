@@ -4,8 +4,6 @@ description: 'Some magic music.'
 publishDate: '2026-04-24 20:45:01'
 tags:
   - Music
-heroImage:
-  src: ./images/image-fd9368c62687.png
 draft: false
 comment: true
 ---

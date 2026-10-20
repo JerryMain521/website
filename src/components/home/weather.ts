@@ -1,3 +1,4 @@
+import weatherLocation from '../../weather-location.json'
 import {
   particleStyle,
   resolveBackground,
@@ -7,7 +8,6 @@ import {
   type Reading,
   type Scene
 } from './weather-model'
-import weatherLocation from '../../weather-location.json'
 
 type Place = { name: string; latitude: number; longitude: number }
 const icons: Record<Scene, string> = {
@@ -25,7 +25,7 @@ export function initWeather() {
   const sky = document.querySelector<HTMLElement>('#weather-sky')
   const status = document.querySelector<HTMLElement>('#weather-status')
   const canvas = document.querySelector<HTMLCanvasElement>('#weather-particles')
-  if (!sky || !status || !canvas) return
+  if (!sky || !canvas) return
   const place: Place = weatherLocation
   let reading: Reading | null = null
   let scene: Scene = 'original'
@@ -161,9 +161,11 @@ export function initWeather() {
     sky!.dataset.kind = kind
     sky!.dataset.intensity = intensity
     const icon = scene === 'sunny' && period === 'night' ? '☾' : icons[scene]
-    status!.textContent = reading
-      ? `${icon} ${background.label} · ${Math.round(reading.temperature)}°C`
-      : 'Weather unavailable'
+    if (status) {
+      status.textContent = reading
+        ? `${icon} ${background.label} · ${Math.round(reading.temperature)}°C`
+        : 'Weather unavailable'
+    }
     animate()
   }
   async function load(force = false) {
