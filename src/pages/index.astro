@@ -11,6 +11,11 @@ import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
 import WeatherStatus from '@/components/home/WeatherStatus.astro'
 import config from '@/site-config'
+import weatherLocation from '../weather-location.json'
+
+const locationTitle = 'displayName' in weatherLocation && typeof weatherLocation.displayName === 'string'
+  ? weatherLocation.displayName
+  : weatherLocation.name
 
 const languages = ['C', 'C++', 'Python', 'Java']
 const frontend = ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'Astro']
@@ -44,7 +49,7 @@ if (!images[imagePath])
       <div class='flex flex-col items-center gap-y-4'>
         <h1 class='text-3xl font-medium'>{config.author}</h1>
         <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='China / Nanjing'>
+          <Label title={locationTitle}>
             <Icon name='location' class='size-5' slot='icon' />
           </Label>
           <WeatherStatus />
