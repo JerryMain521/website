@@ -116,6 +116,6 @@ export function particleStyle(scene: Scene, intensity: Intensity, mobile: boolea
   return {
     count: Math.round(count * (mobile ? 0.55 : 1)),
     level,
-    speed: [0.0, 0.65, 1, 1.5][level]
+    speed: scene === 'snow' ? [0, 0.9, 1.5, 2.4][level] : [0, 0.65, 1, 1.5][level]
   }
 }
