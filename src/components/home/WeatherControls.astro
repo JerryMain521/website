@@ -16,10 +16,33 @@
         <option value='sunny'>晴朗</option>
         <option value='cloudy'>多云</option>
         <option value='overcast'>阴天</option>
-        <option value='rain'>雨天</option>
-        <option value='snow'>下雪</option>
-        <option value='fog'>薄雾</option>
+        <optgroup label='降雨'>
+          <option value='drizzle'>毛毛雨</option>
+          <option value='rain'>降雨</option>
+          <option value='showers'>阵雨</option>
+          <option value='freezing-drizzle'>冻毛毛雨</option>
+          <option value='freezing-rain'>冻雨</option>
+          <option value='thunderstorm'>雷雨</option>
+          <option value='hail'>雷雨伴冰雹</option>
+        </optgroup>
+        <optgroup label='降雪'>
+          <option value='snow'>降雪</option>
+          <option value='snow-showers'>阵雪</option>
+          <option value='snow-grains'>雪粒</option>
+        </optgroup>
+        <optgroup label='雾'>
+          <option value='fog'>雾</option>
+          <option value='rime-fog'>雾凇</option>
+        </optgroup>
       </select>
+      <label for='weather-intensity' class='weather-label'>降水强度</label>
+      <select id='weather-intensity' disabled aria-describedby='weather-intensity-help'>
+        <option value='live'>跟随实况 / 场景默认</option>
+        <option value='light'>弱 · 小雨 / 小雪</option>
+        <option value='moderate'>中 · 中雨 / 中雪</option>
+        <option value='heavy'>强 · 大雨 / 大雪</option>
+      </select>
+      <p id='weather-intensity-help'>晴、云、雾无需降水强度；部分天气只有弱、强两档。</p>
       <form id='weather-city-form'>
         <label for='weather-city'>查询城市</label>
         <div class='city-row'>
@@ -127,6 +150,14 @@
   button:disabled {
     opacity: 0.5;
     cursor: wait;
+  }
+  select:disabled {
+    opacity: 0.55;
+  }
+  #weather-intensity-help {
+    margin: 0.45rem 0 0;
+    font-size: 0.75rem;
+    line-height: 1.5;
   }
   #weather-notice,
   .weather-panel a {

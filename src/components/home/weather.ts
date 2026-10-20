@@ -1,20 +1,15 @@
-type Scene = 'original' | 'sunny' | 'cloudy' | 'overcast' | 'rain' | 'snow' | 'fog'
-type Period = 'day' | 'night'
+import {
+  availableIntensities,
+  particleStyle,
+  resolveBackground,
+  type Intensity,
+  type Kind,
+  type Period,
+  type Reading,
+  type Scene
+} from './weather-model'
+
 type Place = { name: string; latitude: number; longitude: number }
-type Reading = {
-  temperature: number
-  code: number
-  day: boolean
-}
-const names: Record<Scene, string> = {
-  original: '原版蓝色渐变',
-  sunny: '晴朗',
-  cloudy: '多云',
-  overcast: '阴天',
-  rain: '雨天',
-  snow: '下雪',
-  fog: '薄雾'
-}
 const icons: Record<Scene, string> = {
   original: '◌',
   sunny: '☀',
@@ -26,36 +21,33 @@ const icons: Record<Scene, string> = {
 }
 const CACHE_TIME = 20 * 60 * 1000
 
-export function weatherScene(reading: Reading): Scene {
-  const code = reading.code
-  if (code >= 95 || (code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return 'rain'
-  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snow'
-  if (code === 45 || code === 48) return 'fog'
-  if (code === 3) return 'overcast'
-  return code <= 1 ? 'sunny' : 'cloudy'
-}
-
-export function resolveBackground(reading: Reading | null, weather: string, time: string) {
-  const scene: Scene =
-    weather === 'live' ? (reading ? weatherScene(reading) : 'original') : (weather as Scene)
-  const period: Period =
-    time === 'live' ? (reading?.day === false ? 'night' : 'day') : (time as Period)
-  return { scene, period }
-}
-
 export function initWeather() {
   const sky = document.querySelector<HTMLElement>('#weather-sky')
   const status = document.querySelector<HTMLElement>('#weather-status')
   const select = document.querySelector<HTMLSelectElement>('#weather-scene')
+  const intensitySelect = document.querySelector<HTMLSelectElement>('#weather-intensity')
   const periodSelect = document.querySelector<HTMLSelectElement>('#weather-period')
   const notice = document.querySelector<HTMLElement>('#weather-notice')
   const motion = document.querySelector<HTMLInputElement>('#weather-motion')
   const canvas = document.querySelector<HTMLCanvasElement>('#weather-particles')
-  if (!sky || !status || !select || !periodSelect || !notice || !motion || !canvas) return
+  if (
+    !sky ||
+    !status ||
+    !select ||
+    !intensitySelect ||
+    !periodSelect ||
+    !notice ||
+    !motion ||
+    !canvas
+  )
+    return
   let place: Place = { name: '南京', latitude: 32.06, longitude: 118.79 }
   let reading: Reading | null = null
   let scene: Scene = 'original'
   let period: Period = 'day'
+  let intensity: Intensity = 'none'
+  let kind: Kind = 'original'
+  let elapsed = 0
   let requestId = 0
   let controller: AbortController | undefined
   let frame = 0
@@ -64,7 +56,7 @@ export function initWeather() {
   const ctx = canvas.getContext('2d')
   let width = 0,
     height = 0
-  let particles: { x: number; y: number; size: number; speed: number }[] = []
+  let particles: { x: number; y: number; size: number; speed: number; phase: number }[] = []
 
   function resize() {
     if (!canvas || !sky) return
@@ -74,13 +66,18 @@ export function initWeather() {
     canvas.width = width * ratio
     canvas.height = height * ratio
     ctx?.setTransform(ratio, 0, 0, ratio, 0, 0)
-    particles = Array.from({ length: width < 640 ? 35 : 75 }, () => ({
+    seedParticles()
+    draw(0)
+  }
+  function seedParticles() {
+    const style = particleStyle(scene, intensity, width < 640)
+    particles = Array.from({ length: style.count }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       size: Math.random() * 1.6 + 0.6,
-      speed: Math.random() * 1.5 + 0.6
+      speed: Math.random() * 1.5 + 0.6,
+      phase: Math.random() * Math.PI * 2
     }))
-    draw(0)
   }
   function draw(delta: number) {
     if (!ctx) return
@@ -88,28 +85,63 @@ export function initWeather() {
     const stars = period === 'night' && scene === 'sunny'
     if (!['rain', 'snow'].includes(scene) && !stars) return
     const dark = period === 'night' || document.documentElement.classList.contains('dark')
-    ctx.strokeStyle = dark ? '#b5d7ed' : '#426a8d'
+    const style = particleStyle(scene, intensity, width < 640)
+    const drizzle = kind === 'drizzle' || kind === 'freezing-drizzle'
+    const freezing = kind === 'freezing-rain' || kind === 'freezing-drizzle'
+    const storm = kind === 'thunderstorm' || kind === 'hail'
+    const shower = kind === 'showers' || kind === 'snow-showers'
+    const pulse = shower ? 0.65 + 0.35 * Math.sin(elapsed / 1900) ** 2 : 1
+    ctx.strokeStyle = freezing ? (dark ? '#c1e8ff' : '#587f9e') : dark ? '#b5d7ed' : '#426a8d'
     ctx.fillStyle = stars ? '#edf4ff' : dark ? '#e8f2ff' : '#ffffff'
-    for (const p of particles) {
-      ctx.globalAlpha = stars ? 0.65 : 0.28
+    for (const [index, p] of particles.entries()) {
+      const center = Math.abs(p.x - width / 2) < Math.min(width * 0.28, 280) ? 0.55 : 1
+      const depth = 0.65 + p.size * 0.22
+      ctx.globalAlpha = (stars ? 0.65 : 0.21 + style.level * 0.055) * center * pulse
       if (scene === 'rain') {
-        ctx.beginPath()
-        ctx.moveTo(p.x, p.y)
-        ctx.lineTo(p.x - 3, p.y + p.size * 10)
-        ctx.stroke()
-        p.y += delta * p.speed * 0.42
-        p.x -= delta * 0.055
+        const gust = storm ? 1.4 + Math.sin(elapsed / 1700) * 0.3 : 1
+        const length = drizzle ? 3 + p.size * 2 : (5 + style.level * 4) * depth
+        const tilt = drizzle ? 0.6 : (1.5 + style.level * 1.2) * gust
+        ctx.lineWidth = drizzle ? 0.6 : 0.65 + style.level * 0.12
+        if (kind === 'hail' && index % 3 === 0) {
+          ctx.beginPath()
+          ctx.arc(p.x, p.y, (1.1 + style.level * 0.4) * depth, 0, Math.PI * 2)
+          ctx.fill()
+        } else {
+          ctx.beginPath()
+          ctx.moveTo(p.x, p.y)
+          ctx.lineTo(p.x - tilt, p.y + length)
+          ctx.stroke()
+        }
+        p.y += delta * p.speed * 0.42 * style.speed * (drizzle ? 0.45 : 1) * (storm ? 1.3 : 1)
+        p.x -= delta * (drizzle ? 0.012 : 0.03 + style.level * 0.018) * gust
       } else {
+        const grains = kind === 'snow-grains'
+        const radius = stars
+          ? p.size * 0.5
+          : grains
+            ? p.size * 0.5
+            : p.size * (0.65 + style.level * 0.2)
         ctx.beginPath()
-        ctx.arc(p.x, p.y, stars ? p.size * 0.5 : p.size, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2)
         ctx.fill()
         if (scene === 'snow') {
-          p.y += delta * p.speed * 0.025
-          p.x += delta * 0.008
+          if (!grains && style.level === 3 && index % 5 === 0) {
+            ctx.strokeStyle = dark ? '#e8f2ff' : '#d0dfe8'
+            ctx.lineWidth = 0.7
+            ctx.beginPath()
+            ctx.moveTo(p.x - radius * 1.7, p.y)
+            ctx.lineTo(p.x + radius * 1.7, p.y)
+            ctx.moveTo(p.x, p.y - radius * 1.7)
+            ctx.lineTo(p.x, p.y + radius * 1.7)
+            ctx.stroke()
+          }
+          p.y += delta * p.speed * 0.025 * style.speed * (grains ? 2.2 : 1)
+          p.x +=
+            delta * (0.008 + Math.sin(elapsed / 1300 + p.phase) * 0.024) * (1 + style.level * 0.2)
         }
       }
-      if (p.y > height + 20) {
-        p.y = -20
+      if (p.y > height + 30) {
+        p.y = -30
         p.x = Math.random() * width
       }
       if (p.x < -10) p.x = width + 10
@@ -119,7 +151,9 @@ export function initWeather() {
   }
   let last = 0
   function tick(time: number) {
-    draw(last ? Math.min(time - last, 50) : 0)
+    const delta = last ? Math.min(time - last, 50) : 0
+    elapsed += delta
+    draw(delta)
     last = time
     frame = requestAnimationFrame(tick)
   }
@@ -133,21 +167,41 @@ export function initWeather() {
   }
   function render() {
     const live = select!.value === 'live'
-    const background = resolveBackground(reading, select!.value, periodSelect!.value)
+    const candidate = resolveBackground(reading, select!.value, periodSelect!.value)
+    const supported = availableIntensities(candidate.kind)
+    intensitySelect!.disabled = supported.length === 0
+    for (const option of intensitySelect!.options) {
+      option.disabled = option.value !== 'live' && !supported.includes(option.value as Intensity)
+    }
+    if (intensitySelect!.selectedOptions[0]?.disabled) intensitySelect!.value = 'live'
+    const background = resolveBackground(
+      reading,
+      select!.value,
+      periodSelect!.value,
+      intensitySelect!.value
+    )
     scene = background.scene
     period = background.period
+    kind = background.kind
+    intensity = background.intensity
+    seedParticles()
     sky!.dataset.scene = scene
     sky!.dataset.day = period
+    sky!.dataset.kind = kind
+    sky!.dataset.intensity = intensity
     const timeLabel = period === 'day' ? '白天' : '黑夜'
     const icon = scene === 'sunny' && period === 'night' ? '☾' : icons[scene]
-    const preview = !live || periodSelect!.value !== 'live'
+    const preview =
+      !live ||
+      periodSelect!.value !== 'live' ||
+      (!intensitySelect!.disabled && intensitySelect!.value !== 'live')
     status!.textContent = live
       ? reading
-        ? `${icon} ${place.name} · ${timeLabel} · ${names[scene]} · ${Math.round(reading.temperature)}°C${preview ? ' · 昼夜模拟' : ''}`
+        ? `${icon} ${place.name} · ${timeLabel} · ${background.label} · ${Math.round(reading.temperature)}°C${preview ? ' · 效果模拟' : ''}`
         : `${place.name} · 天气暂不可用，保留原版背景`
       : scene === 'original'
         ? '◌ 原版蓝色渐变 · 背景对比'
-        : `${icon} ${timeLabel} · ${names[scene]} · 模拟预览${periodSelect!.value === 'live' && !reading ? '（昼夜未获取，暂按白天）' : ''}`
+        : `${icon} ${timeLabel} · ${background.label} · 模拟预览${periodSelect!.value === 'live' && !reading ? '（昼夜未获取，暂按白天）' : ''}`
     animate()
   }
   async function load(next: Place, force = false) {
@@ -216,6 +270,7 @@ export function initWeather() {
   }
   select.addEventListener('change', render)
   periodSelect.addEventListener('change', render)
+  intensitySelect.addEventListener('change', render)
   motion.addEventListener('change', animate)
   reduced.addEventListener('change', () => {
     motion.checked = !reduced.matches

@@ -116,6 +116,21 @@
     height: 300px;
     filter: blur(24px);
   }
+  #weather-sky[data-intensity='heavy'] .sky-cloud {
+    animation-duration: 17s;
+  }
+  #weather-sky:is([data-kind='thunderstorm'], [data-kind='hail']) .sky-weather {
+    background: linear-gradient(#3e526cbf, #738a9c70);
+  }
+  #weather-sky:is([data-kind='freezing-rain'], [data-kind='freezing-drizzle']) .sky-weather {
+    background: linear-gradient(#91b7ce99, #c9e0e755);
+  }
+  #weather-sky[data-kind='rime-fog'] .sky-weather {
+    background: linear-gradient(#b4d1dccc, #e7f1f399);
+  }
+  #weather-sky[data-scene='rain'][data-intensity='heavy'] .sky-weather {
+    filter: brightness(0.8);
+  }
   #weather-sky[data-day='night'] .sky-color {
     background: linear-gradient(#263b78e6, #25325099);
     opacity: 0.55;
