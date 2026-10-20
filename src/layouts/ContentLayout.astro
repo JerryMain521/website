@@ -11,13 +11,21 @@ interface Props {
   highlightColor?: string
   back?: string
   weatherBackground?: boolean | 'subtle'
+  wide?: boolean
 }
 
-const { meta, highlightColor, back = '/', weatherBackground = false, ...props } = Astro.props
+const {
+  meta,
+  highlightColor,
+  back = '/',
+  weatherBackground = false,
+  wide = false,
+  ...props
+} = Astro.props
 ---
 
 <PageLayout {meta} {highlightColor} {weatherBackground} {...props}>
-  <div class:list={{ 'weather-page': weatherBackground === 'subtle' }}>
+  <div class:list={{ 'weather-page': weatherBackground === 'subtle', 'weather-page-wide': wide }}>
     <Button title='Back' href={back} variant='back' />
     <main class='mt-6 items-start gap-x-10 md:flex'>
       {/* Sidebar */}
@@ -104,7 +112,7 @@ const { meta, highlightColor, back = '/', weatherBackground = false, ...props } 
   })
 </script>
 <style>
-  .weather-page {
+  .weather-page:not(.weather-page-wide) {
     max-width: 60rem;
     margin-inline: auto;
   }
@@ -117,8 +125,8 @@ const { meta, highlightColor, back = '/', weatherBackground = false, ...props } 
     .weather-page > .bottom {
       column-gap: 2.5rem;
     }
-    .weather-page #sidebar,
-    .weather-page .bottom > div:last-child {
+    .weather-page:not(.weather-page-wide) #sidebar,
+    .weather-page:not(.weather-page-wide) .bottom > div:last-child {
       flex-basis: 13rem;
       min-width: 11rem;
       flex-shrink: 0;
