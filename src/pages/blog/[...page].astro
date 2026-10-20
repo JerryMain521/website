@@ -2,10 +2,11 @@
 import type { GetStaticPaths, Page } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
-import { Paginator, PostPreview } from 'astro-pure/components/pages'
+import { Paginator } from 'astro-pure/components/pages'
 import { getBlogCollection, getUniqueTagsWithCount, sortMDByDate } from 'astro-pure/server'
 import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import PostCard from '@/components/blog/PostCard.astro'
 import config from '@/site-config'
 
 export const prerender = true
@@ -72,9 +73,9 @@ const paginationProps = {
                 </a>
               </div>
               {/* posts */}
-              <ul class='flex flex-col gap-y-4 text-start'>
+              <ul class='post-grid text-start'>
                 {page.data.map((post) => (
-                  <PostPreview {post} detailed class='blog-card' />
+                  <PostCard {post} />
                 ))}
               </ul>
               <Paginator {...paginationProps} />
@@ -125,37 +126,12 @@ const paginationProps = {
   #sidebar {
     min-width: 0;
   }
-  .blog-index :global(.blog-card > a) {
-    padding: 1.15rem 1.25rem;
-    background:
-      linear-gradient(135deg, hsl(var(--foreground) / 0.025), transparent 65%),
-      var(--weather-surface);
-    border-color: var(--weather-edge);
-    box-shadow:
-      inset 0 1px hsl(var(--foreground) / 0.035),
-      var(--weather-shadow);
-    backdrop-filter: blur(12px);
-    transition:
-      border-color 180ms ease,
-      box-shadow 180ms ease,
-      transform 180ms ease;
+  .post-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    container-type: inline-size;
+    gap: 1rem;
   }
-  .blog-index :global(.blog-card > a:hover),
-  .blog-index :global(.blog-card > a:focus-visible) {
-    border-color: hsl(var(--primary) / 0.4);
-    box-shadow:
-      inset 0 1px hsl(var(--foreground) / 0.05),
-      0 12px 32px hsl(220 40% 5% / 0.15);
-    transform: translateY(-2px);
-  }
-  .blog-index :global(.blog-card > a:focus-visible) {
-    outline: 2px solid hsl(var(--primary) / 0.7);
-    outline-offset: 3px;
-  }
-  .blog-index :global(.tag-list) {
-    flex-wrap: wrap;
-  }
-  .blog-index :global(.tag-list a),
   #sidebar :global(li a) {
     background-color: hsl(var(--primary) / 0.07);
     border-color: hsl(var(--primary) / 0.12);
@@ -167,12 +143,6 @@ const paginationProps = {
     }
     #sidebar {
       padding-top: 0.1rem;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .blog-index :global(.blog-card > a) {
-      transition: none;
-      transform: none;
     }
   }
 </style>
