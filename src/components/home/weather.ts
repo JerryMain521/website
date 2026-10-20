@@ -7,6 +7,7 @@ import {
   type Reading,
   type Scene
 } from './weather-model'
+import weatherLocation from '../../weather-location.json'
 
 type Place = { name: string; latitude: number; longitude: number }
 const icons: Record<Scene, string> = {
@@ -25,7 +26,7 @@ export function initWeather() {
   const status = document.querySelector<HTMLElement>('#weather-status')
   const canvas = document.querySelector<HTMLCanvasElement>('#weather-particles')
   if (!sky || !status || !canvas) return
-  const place: Place = { name: '南京', latitude: 32.06, longitude: 118.79 }
+  const place: Place = weatherLocation
   let reading: Reading | null = null
   let scene: Scene = 'original'
   let period: Period = 'day'
