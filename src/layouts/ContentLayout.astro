@@ -10,68 +10,71 @@ interface Props {
   meta: SiteMeta
   highlightColor?: string
   back?: string
+  weatherBackground?: boolean | 'subtle'
 }
 
-const { meta, highlightColor, back = '/', ...props } = Astro.props
+const { meta, highlightColor, back = '/', weatherBackground = false, ...props } = Astro.props
 ---
 
-<PageLayout {meta} {highlightColor} {...props}>
-  <Button title='Back' href={back} variant='back' />
-  <main class='mt-6 items-start gap-x-10 md:flex'>
-    {/* Sidebar */}
-    <aside
-      class='animate top-20 min-w-48 basis-60 overflow-y-scroll max-md:hidden z-40 fixed md:sticky md:order-2 lg:shrink-0 max-md:border max-md:px-4 max-md:py-3 max-md:bg-muted max-md:rounded-xl'
-      style='height:calc(100vh - 7rem);'
-      id='sidebar'
-    >
-      <slot name='sidebar' />
-    </aside>
-    <div
-      id='sidebar-shade'
-      class='fixed top-0 start-0 w-full h-full'
-      style='display:none;background-color:#00000091;z-index:31'
-    >
-    </div>
-
-    <article class='min-w-0 grow'>
-      {/* Content header */}
-      <div id='content-header' class='animate'>
-        <slot name='header' />
-      </div>
-
-      {/* Content */}
-      <div
-        id='content'
-        class={cn(
-          'max-w-none animate mt-8 md:min-w-[45ch] overflow-x-hidden',
-          integ.typography.class
-        )}
+<PageLayout {meta} {highlightColor} {weatherBackground} {...props}>
+  <div class:list={{ 'weather-page': weatherBackground === 'subtle' }}>
+    <Button title='Back' href={back} variant='back' />
+    <main class='mt-6 items-start gap-x-10 md:flex'>
+      {/* Sidebar */}
+      <aside
+        class='animate top-20 min-w-48 basis-60 overflow-y-scroll max-md:hidden z-40 fixed md:sticky md:order-2 lg:shrink-0 max-md:border max-md:px-4 max-md:py-3 max-md:bg-muted max-md:rounded-xl'
+        style='height:calc(100vh - 7rem);'
+        id='sidebar'
       >
-        <slot />
+        <slot name='sidebar' />
+      </aside>
+      <div
+        id='sidebar-shade'
+        class='fixed top-0 start-0 w-full h-full'
+        style='display:none;background-color:#00000091;z-index:31'
+      >
       </div>
-    </article>
-  </main>
 
-  <div class='bottom mt-6 items-start gap-x-10 md:flex'>
-    {/* Bottom */}
-    <div class='flex-1 text-muted-foreground md:min-w-[50ch]'>
-      <slot name='bottom' />
+      <article class='min-w-0 grow'>
+        {/* Content header */}
+        <div id='content-header' class='animate'>
+          <slot name='header' />
+        </div>
+
+        {/* Content */}
+        <div
+          id='content'
+          class={cn(
+            'max-w-none animate mt-8 md:min-w-[45ch] overflow-x-hidden',
+            integ.typography.class
+          )}
+        >
+          <slot />
+        </div>
+      </article>
+    </main>
+
+    <div class='bottom mt-6 items-start gap-x-10 md:flex'>
+      {/* Bottom */}
+      <div class='flex-1 text-muted-foreground md:min-w-[50ch]'>
+        <slot name='bottom' />
+      </div>
+      <div class='min-w-48 basis-60'>
+        <slot name='bottom-sidebar' />
+      </div>
     </div>
-    <div class='min-w-48 basis-60'>
-      <slot name='bottom-sidebar' />
-    </div>
+
+    <BackToTop header='content-header' content='content'>
+      <button
+        slot='other-icons'
+        aria-label='Toggle sidebar'
+        class='size-10 flex items-center justify-center rounded-full border-2 border-transparent bg-muted text-muted-foreground duration-300 hover:border-border/75 md:hidden sm:size-12'
+        id='sidebar-btn'
+      >
+        <Icon name='list' />
+      </button>
+    </BackToTop>
   </div>
-
-  <BackToTop header='content-header' content='content'>
-    <button
-      slot='other-icons'
-      aria-label='Toggle sidebar'
-      class='size-10 flex items-center justify-center rounded-full border-2 border-transparent bg-muted text-muted-foreground duration-300 hover:border-border/75 md:hidden sm:size-12'
-      id='sidebar-btn'
-    >
-      <Icon name='list' />
-    </button>
-  </BackToTop>
 </PageLayout>
 
 <script>
@@ -101,6 +104,26 @@ const { meta, highlightColor, back = '/', ...props } = Astro.props
   })
 </script>
 <style>
+  .weather-page {
+    max-width: 60rem;
+    margin-inline: auto;
+  }
+  .weather-page #content,
+  .weather-page .bottom > div {
+    min-width: 0;
+  }
+  @media (min-width: 768px) {
+    .weather-page > main,
+    .weather-page > .bottom {
+      column-gap: 2.5rem;
+    }
+    .weather-page #sidebar,
+    .weather-page .bottom > div:last-child {
+      flex-basis: 13rem;
+      min-width: 11rem;
+      flex-shrink: 0;
+    }
+  }
   @media (min-width: 769px) {
     #sidebar-shade {
       display: none !important;

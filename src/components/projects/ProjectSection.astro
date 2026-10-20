@@ -46,7 +46,7 @@ const projectIconSet: Record<string, iconsType> = {
         }
 
         return (
-          <div class='relative overflow-hidden rounded-xl border'>
+          <div class='weather-card weather-card-interactive relative overflow-hidden rounded-xl border'>
             {imagePath && (
               <Image
                 class='absolute end-0 z-0 m-0 h-full w-1/2 object-cover opacity-40'
@@ -54,8 +54,10 @@ const projectIconSet: Record<string, iconsType> = {
                 alt={project.name}
                 loading='lazy'
                 style={{
-                  msMaskImage: '-ms-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
-                  WebkitMaskImage: '-webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
+                  msMaskImage:
+                    '-ms-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
+                  WebkitMaskImage:
+                    '-webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
                   maskImage: 'linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)'
                 }}
               />

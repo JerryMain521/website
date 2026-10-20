@@ -1,4 +1,19 @@
-<div id='weather-sky' data-scene='original' data-day='day' data-motion='true' aria-hidden='true'>
+---
+interface Props {
+  subtle?: boolean
+}
+
+const { subtle = false } = Astro.props
+---
+
+<div
+  id='weather-sky'
+  data-variant={subtle ? 'subtle' : 'full'}
+  data-scene='original'
+  data-day='day'
+  data-motion='true'
+  aria-hidden='true'
+>
   <div class='sky-color'></div>
   <div class='sky-weather'></div>
   <div class='sky-glow'></div>
@@ -177,6 +192,21 @@
   }
   #weather-sky[data-motion='false'] .sky-cloud {
     animation-play-state: paused;
+  }
+  #weather-sky[data-variant='subtle'] {
+    height: min(1200px, 120svh);
+    opacity: 0.48;
+    mask-image: linear-gradient(#000 0%, #000 15%, transparent 100%);
+  }
+  #weather-sky[data-variant='subtle'][data-scene='original'] {
+    opacity: 0;
+  }
+  #weather-sky[data-variant='subtle'] .sky-glow,
+  #weather-sky[data-variant='subtle'] .sky-cloud {
+    display: none;
+  }
+  #weather-sky[data-variant='subtle'] canvas {
+    opacity: 0.3;
   }
   @keyframes weather-drift {
     from {

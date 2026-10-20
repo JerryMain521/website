@@ -9,11 +9,12 @@ import config from '@/site-config'
 // all pages through the use of the <BaseLayout /> component.
 import '@/assets/styles/global.css'
 import '@/assets/styles/app.css'
+import '@/assets/styles/weather-pages.css'
 
 interface Props {
   meta: SiteMeta
   highlightColor?: string
-  weatherBackground?: boolean
+  weatherBackground?: boolean | 'subtle'
 }
 
 const {
@@ -30,8 +31,12 @@ const {
     <ThemeProvider />
   </head>
 
-  <body class='flex justify-center bg-background text-foreground' {...props}>
-    {weatherBackground && <WeatherSky />}
+  <body
+    class='flex justify-center bg-background text-foreground'
+    data-weather-background={weatherBackground === 'subtle' ? 'subtle' : undefined}
+    {...props}
+  >
+    {weatherBackground && <WeatherSky subtle={weatherBackground === 'subtle'} />}
     {
       highlightColor && (
         <div

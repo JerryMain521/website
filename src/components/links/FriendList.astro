@@ -46,7 +46,7 @@ const getAvatarSrc = (friend: friend) =>
     friendList.link_list.length > 0 ? (
       shuffle(friendList.link_list).map((frd: friend) => (
         <a href={frd.link} target='_blank' class='no-underline'>
-          <div class='group relative h-full overflow-hidden rounded-2xl border bg-background px-2.5 py-1.5 transition-colors hover:bg-muted sm:px-4 sm:py-2'>
+          <div class='weather-card weather-card-interactive group relative h-full overflow-hidden rounded-2xl border bg-background px-2.5 py-1.5 transition-colors hover:bg-muted sm:px-4 sm:py-2'>
             <div class='relative z-10 flex h-full items-center gap-3'>
               {/* avatar */}
               <div class='relative h-14 w-14 min-w-14 overflow-hidden rounded-full'>
@@ -101,8 +101,10 @@ const getAvatarSrc = (friend: friend) =>
               alt='avatar bg'
               loading='lazy'
               style={{
-                msMaskImage: '-ms-linear-gradient(right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
-                WebkitMaskImage: '-webkit-linear-gradient(right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
+                msMaskImage:
+                  '-ms-linear-gradient(right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
+                WebkitMaskImage:
+                  '-webkit-linear-gradient(right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)',
                 maskImage: 'linear-gradient(to left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%)'
               }}
             />
