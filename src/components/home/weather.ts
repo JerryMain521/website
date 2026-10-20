@@ -1,5 +1,4 @@
 import {
-  availableIntensities,
   particleStyle,
   resolveBackground,
   type Intensity,
@@ -24,24 +23,9 @@ const CACHE_TIME = 20 * 60 * 1000
 export function initWeather() {
   const sky = document.querySelector<HTMLElement>('#weather-sky')
   const status = document.querySelector<HTMLElement>('#weather-status')
-  const select = document.querySelector<HTMLSelectElement>('#weather-scene')
-  const intensitySelect = document.querySelector<HTMLSelectElement>('#weather-intensity')
-  const periodSelect = document.querySelector<HTMLSelectElement>('#weather-period')
-  const notice = document.querySelector<HTMLElement>('#weather-notice')
-  const motion = document.querySelector<HTMLInputElement>('#weather-motion')
   const canvas = document.querySelector<HTMLCanvasElement>('#weather-particles')
-  if (
-    !sky ||
-    !status ||
-    !select ||
-    !intensitySelect ||
-    !periodSelect ||
-    !notice ||
-    !motion ||
-    !canvas
-  )
-    return
-  let place: Place = { name: '南京', latitude: 32.06, longitude: 118.79 }
+  if (!sky || !status || !canvas) return
+  const place: Place = { name: '南京', latitude: 32.06, longitude: 118.79 }
   let reading: Reading | null = null
   let scene: Scene = 'original'
   let period: Period = 'day'
@@ -52,7 +36,6 @@ export function initWeather() {
   let controller: AbortController | undefined
   let frame = 0
   const reduced = matchMedia('(prefers-reduced-motion: reduce)')
-  motion.checked = !reduced.matches
   const ctx = canvas.getContext('2d')
   let width = 0,
     height = 0
@@ -160,26 +143,13 @@ export function initWeather() {
   function animate() {
     cancelAnimationFrame(frame)
     last = 0
-    sky!.dataset.motion = String(motion!.checked && !reduced.matches)
+    sky!.dataset.motion = String(!reduced.matches)
     draw(0)
-    if (motion!.checked && !reduced.matches && !document.hidden && ['rain', 'snow'].includes(scene))
+    if (!reduced.matches && !document.hidden && ['rain', 'snow'].includes(scene))
       frame = requestAnimationFrame(tick)
   }
   function render() {
-    const live = select!.value === 'live'
-    const candidate = resolveBackground(reading, select!.value, periodSelect!.value)
-    const supported = availableIntensities(candidate.kind)
-    intensitySelect!.disabled = supported.length === 0
-    for (const option of intensitySelect!.options) {
-      option.disabled = option.value !== 'live' && !supported.includes(option.value as Intensity)
-    }
-    if (intensitySelect!.selectedOptions[0]?.disabled) intensitySelect!.value = 'live'
-    const background = resolveBackground(
-      reading,
-      select!.value,
-      periodSelect!.value,
-      intensitySelect!.value
-    )
+    const background = resolveBackground(reading, 'live', 'live', 'live')
     scene = background.scene
     period = background.period
     kind = background.kind
@@ -191,20 +161,12 @@ export function initWeather() {
     sky!.dataset.intensity = intensity
     const timeLabel = period === 'day' ? '白天' : '黑夜'
     const icon = scene === 'sunny' && period === 'night' ? '☾' : icons[scene]
-    const preview =
-      !live ||
-      periodSelect!.value !== 'live' ||
-      (!intensitySelect!.disabled && intensitySelect!.value !== 'live')
-    status!.textContent = live
-      ? reading
-        ? `${icon} ${place.name} · ${timeLabel} · ${background.label} · ${Math.round(reading.temperature)}°C${preview ? ' · 效果模拟' : ''}`
-        : `${place.name} · 天气暂不可用，保留原版背景`
-      : scene === 'original'
-        ? '◌ 原版蓝色渐变 · 背景对比'
-        : `${icon} ${timeLabel} · ${background.label} · 模拟预览${periodSelect!.value === 'live' && !reading ? '（昼夜未获取，暂按白天）' : ''}`
+    status!.textContent = reading
+      ? `${icon} ${place.name} · ${timeLabel} · ${background.label} · ${Math.round(reading.temperature)}°C`
+      : `${place.name} · 天气暂不可用`
     animate()
   }
-  async function load(next: Place, force = false) {
+  async function load(force = false) {
     const id = ++requestId
     controller?.abort()
     controller = new AbortController()
@@ -213,8 +175,7 @@ export function initWeather() {
       () => controller?.signal === signal && controller.abort(),
       12000
     )
-    const key = `weather-v1:${next.latitude.toFixed(2)},${next.longitude.toFixed(2)}`
-    notice!.textContent = `正在查询${next.name}天气…`
+    const key = `weather-v1:${place.latitude.toFixed(2)},${place.longitude.toFixed(2)}`
     try {
       let cached: { saved: number; reading: Reading } | null = null
       try {
@@ -226,8 +187,8 @@ export function initWeather() {
         !force && cached && Date.now() - cached.saved < CACHE_TIME ? cached.reading : null
       if (!result) {
         const params = new URLSearchParams({
-          latitude: String(next.latitude),
-          longitude: String(next.longitude),
+          latitude: String(place.latitude),
+          longitude: String(place.longitude),
           current: 'temperature_2m,weather_code,is_day',
           timezone: 'auto',
           timeformat: 'unixtime',
@@ -256,83 +217,24 @@ export function initWeather() {
         }
       }
       if (id !== requestId) return
-      place = next
       reading = result
-      notice!.textContent = `已获取${place.name}天气，每 20 分钟更新。可切换模拟场景比较效果。`
       render()
     } catch {
       if (id !== requestId) return
-      notice!.textContent = `暂时无法获取${next.name}天气，请稍后重试；仍可使用全部模拟场景。`
       if (!reading) render()
     } finally {
       clearTimeout(timeout)
     }
   }
-  select.addEventListener('change', render)
-  periodSelect.addEventListener('change', render)
-  intensitySelect.addEventListener('change', render)
-  motion.addEventListener('change', animate)
-  reduced.addEventListener('change', () => {
-    motion.checked = !reduced.matches
-    animate()
-  })
+  reduced.addEventListener('change', animate)
   document.addEventListener('visibilitychange', animate)
   new MutationObserver(() => draw(0)).observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class']
   })
   new ResizeObserver(resize).observe(sky)
-  document.querySelector('#weather-city-form')?.addEventListener('submit', async (event) => {
-    event.preventDefault()
-    const input = document.querySelector<HTMLInputElement>('#weather-city')!
-    const city = input.value.trim()
-    if (!city) return
-    const button = document.querySelector<HTMLButtonElement>('#weather-city-form button')!
-    button.disabled = true
-    notice.textContent = '正在查找城市…'
-    try {
-      const response = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?${new URLSearchParams({ name: city, count: '1', language: 'zh', format: 'json' })}`,
-        { signal: AbortSignal.timeout(10000) }
-      )
-      if (!response.ok) throw new Error('City lookup failed')
-      const data = await response.json()
-      const found = data.results?.[0]
-      if (!found) {
-        notice.textContent = '未找到城市，可以尝试拼音或英文城市名。'
-        return
-      }
-      select.value = 'live'
-      await load({ name: found.name, latitude: found.latitude, longitude: found.longitude })
-    } catch {
-      notice.textContent = '城市查询失败，请稍后重试。'
-    } finally {
-      button.disabled = false
-    }
-  })
-  document.querySelector('#weather-location')?.addEventListener('click', () => {
-    if (!navigator.geolocation) {
-      notice.textContent = '浏览器不支持定位，请手动查询城市。'
-      return
-    }
-    notice.textContent = '正在等待定位授权…'
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        select.value = 'live'
-        void load({
-          name: '我的位置',
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        })
-      },
-      () => {
-        notice.textContent = '未能取得位置，可手动查询城市。'
-      },
-      { timeout: 10000, maximumAge: 600000 }
-    )
-  })
   const timer = window.setInterval(() => {
-    if (!document.hidden) void load(place, true)
+    if (!document.hidden) void load(true)
   }, CACHE_TIME)
   window.addEventListener(
     'pagehide',
@@ -344,5 +246,5 @@ export function initWeather() {
     { once: true }
   )
   resize()
-  void load(place)
+  void load()
 }

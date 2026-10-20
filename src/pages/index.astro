@@ -9,7 +9,7 @@ import PageLayout from '@/layouts/BaseLayout.astro'
 import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
-import WeatherControls from '@/components/home/WeatherControls.astro'
+import WeatherStatus from '@/components/home/WeatherStatus.astro'
 import config from '@/site-config'
 
 const languages = ['C', 'C++', 'Python', 'Java']
@@ -54,7 +54,7 @@ if (!images[imagePath])
       </div>
 
       {/* Get template */}
-      <WeatherControls />
+      <WeatherStatus />
       {
         /*<a
         href='https://github.com/cworld1/astro-theme-pure'
