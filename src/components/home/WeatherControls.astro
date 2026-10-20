@@ -3,18 +3,22 @@
   <details>
     <summary>天气实验室 <span>切换效果 / 原版对比</span></summary>
     <div class='weather-panel'>
-      <label for='weather-scene'>背景场景</label>
+      <label for='weather-period'>时间维度</label>
+      <select id='weather-period'>
+        <option value='live'>跟随当地昼夜</option>
+        <option value='day'>白天</option>
+        <option value='night'>黑夜</option>
+      </select>
+      <label for='weather-scene' class='weather-label'>天气维度</label>
       <select id='weather-scene'>
         <option value='live'>当地天气</option>
         <option value='original'>原版蓝色渐变</option>
-        <option value='sunny'>晴天</option>
+        <option value='sunny'>晴朗</option>
         <option value='cloudy'>多云</option>
         <option value='overcast'>阴天</option>
         <option value='rain'>雨天</option>
         <option value='snow'>下雪</option>
         <option value='fog'>薄雾</option>
-        <option value='sunset'>日落</option>
-        <option value='night'>晴朗夜空</option>
       </select>
       <form id='weather-city-form'>
         <label for='weather-city'>查询城市</label>
@@ -74,6 +78,9 @@
   form > label {
     display: block;
     margin-bottom: 0.4rem;
+  }
+  .weather-label {
+    margin-top: 0.8rem;
   }
   select,
   input[type='text'],

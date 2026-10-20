@@ -1,32 +1,19 @@
-type Scene =
-  | 'original'
-  | 'sunny'
-  | 'cloudy'
-  | 'overcast'
-  | 'rain'
-  | 'snow'
-  | 'fog'
-  | 'sunset'
-  | 'night'
+type Scene = 'original' | 'sunny' | 'cloudy' | 'overcast' | 'rain' | 'snow' | 'fog'
+type Period = 'day' | 'night'
 type Place = { name: string; latitude: number; longitude: number }
 type Reading = {
   temperature: number
   code: number
   day: boolean
-  time: number
-  sunrise: number
-  sunset: number
 }
 const names: Record<Scene, string> = {
   original: '原版蓝色渐变',
-  sunny: '晴天',
+  sunny: '晴朗',
   cloudy: '多云',
   overcast: '阴天',
   rain: '雨天',
   snow: '下雪',
-  fog: '薄雾',
-  sunset: '日出 / 日落',
-  night: '晴朗夜空'
+  fog: '薄雾'
 }
 const icons: Record<Scene, string> = {
   original: '◌',
@@ -35,9 +22,7 @@ const icons: Record<Scene, string> = {
   overcast: '☁',
   rain: '☂',
   snow: '❄',
-  fog: '≋',
-  sunset: '◒',
-  night: '☾'
+  fog: '≋'
 }
 const CACHE_TIME = 20 * 60 * 1000
 
@@ -47,26 +32,30 @@ export function weatherScene(reading: Reading): Scene {
   if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snow'
   if (code === 45 || code === 48) return 'fog'
   if (code === 3) return 'overcast'
-  if (
-    code <= 2 &&
-    [reading.sunrise, reading.sunset].some((time) => Math.abs(reading.time - time) < 2400)
-  )
-    return 'sunset'
-  if (!reading.day && code <= 1) return 'night'
   return code <= 1 ? 'sunny' : 'cloudy'
+}
+
+export function resolveBackground(reading: Reading | null, weather: string, time: string) {
+  const scene: Scene =
+    weather === 'live' ? (reading ? weatherScene(reading) : 'original') : (weather as Scene)
+  const period: Period =
+    time === 'live' ? (reading?.day === false ? 'night' : 'day') : (time as Period)
+  return { scene, period }
 }
 
 export function initWeather() {
   const sky = document.querySelector<HTMLElement>('#weather-sky')
   const status = document.querySelector<HTMLElement>('#weather-status')
   const select = document.querySelector<HTMLSelectElement>('#weather-scene')
+  const periodSelect = document.querySelector<HTMLSelectElement>('#weather-period')
   const notice = document.querySelector<HTMLElement>('#weather-notice')
   const motion = document.querySelector<HTMLInputElement>('#weather-motion')
   const canvas = document.querySelector<HTMLCanvasElement>('#weather-particles')
-  if (!sky || !status || !select || !notice || !motion || !canvas) return
+  if (!sky || !status || !select || !periodSelect || !notice || !motion || !canvas) return
   let place: Place = { name: '南京', latitude: 32.06, longitude: 118.79 }
   let reading: Reading | null = null
   let scene: Scene = 'original'
+  let period: Period = 'day'
   let requestId = 0
   let controller: AbortController | undefined
   let frame = 0
@@ -96,13 +85,13 @@ export function initWeather() {
   function draw(delta: number) {
     if (!ctx) return
     ctx.clearRect(0, 0, width, height)
-    if (!['rain', 'snow', 'night'].includes(scene)) return
-    const dark = document.documentElement.classList.contains('dark')
+    const stars = period === 'night' && scene === 'sunny'
+    if (!['rain', 'snow'].includes(scene) && !stars) return
+    const dark = period === 'night' || document.documentElement.classList.contains('dark')
     ctx.strokeStyle = dark ? '#b5d7ed' : '#426a8d'
-    ctx.fillStyle =
-      scene === 'night' ? (dark ? '#edf4ff' : '#627496') : dark ? '#e8f2ff' : '#ffffff'
+    ctx.fillStyle = stars ? '#edf4ff' : dark ? '#e8f2ff' : '#ffffff'
     for (const p of particles) {
-      ctx.globalAlpha = scene === 'night' ? 0.5 : 0.28
+      ctx.globalAlpha = stars ? 0.65 : 0.28
       if (scene === 'rain') {
         ctx.beginPath()
         ctx.moveTo(p.x, p.y)
@@ -112,7 +101,7 @@ export function initWeather() {
         p.x -= delta * 0.055
       } else {
         ctx.beginPath()
-        ctx.arc(p.x, p.y, scene === 'night' ? p.size * 0.5 : p.size, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, stars ? p.size * 0.5 : p.size, 0, Math.PI * 2)
         ctx.fill()
         if (scene === 'snow') {
           p.y += delta * p.speed * 0.025
@@ -144,14 +133,21 @@ export function initWeather() {
   }
   function render() {
     const live = select!.value === 'live'
-    scene = live ? (reading ? weatherScene(reading) : 'original') : (select!.value as Scene)
+    const background = resolveBackground(reading, select!.value, periodSelect!.value)
+    scene = background.scene
+    period = background.period
     sky!.dataset.scene = scene
-    sky!.dataset.day = live && reading && !reading.day ? 'night' : 'day'
+    sky!.dataset.day = period
+    const timeLabel = period === 'day' ? '白天' : '黑夜'
+    const icon = scene === 'sunny' && period === 'night' ? '☾' : icons[scene]
+    const preview = !live || periodSelect!.value !== 'live'
     status!.textContent = live
       ? reading
-        ? `${icons[scene]} ${place.name} · ${names[scene]} · ${Math.round(reading.temperature)}°C`
+        ? `${icon} ${place.name} · ${timeLabel} · ${names[scene]} · ${Math.round(reading.temperature)}°C${preview ? ' · 昼夜模拟' : ''}`
         : `${place.name} · 天气暂不可用，保留原版背景`
-      : `${icons[scene]} ${names[scene]} · ${scene === 'original' ? '背景对比' : '模拟预览'}`
+      : scene === 'original'
+        ? '◌ 原版蓝色渐变 · 背景对比'
+        : `${icon} ${timeLabel} · ${names[scene]} · 模拟预览${periodSelect!.value === 'live' && !reading ? '（昼夜未获取，暂按白天）' : ''}`
     animate()
   }
   async function load(next: Place, force = false) {
@@ -179,7 +175,6 @@ export function initWeather() {
           latitude: String(next.latitude),
           longitude: String(next.longitude),
           current: 'temperature_2m,weather_code,is_day',
-          daily: 'sunrise,sunset',
           timezone: 'auto',
           timeformat: 'unixtime',
           forecast_days: '1'
@@ -198,10 +193,7 @@ export function initWeather() {
         result = {
           temperature: c.temperature_2m,
           code: c.weather_code,
-          day: c.is_day === 1,
-          time: c.time,
-          sunrise: data.daily?.sunrise?.[0] ?? 0,
-          sunset: data.daily?.sunset?.[0] ?? 0
+          day: c.is_day === 1
         }
         try {
           localStorage.setItem(key, JSON.stringify({ saved: Date.now(), reading: result }))
@@ -223,6 +215,7 @@ export function initWeather() {
     }
   }
   select.addEventListener('change', render)
+  periodSelect.addEventListener('change', render)
   motion.addEventListener('change', animate)
   reduced.addEventListener('change', () => {
     motion.checked = !reduced.matches
