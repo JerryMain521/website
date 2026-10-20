@@ -1,20 +1,12 @@
-<div class='weather-status'>
-  <p id='weather-status' role='status'>正在获取南京天气…</p>
-  <a href='https://open-meteo.com/' target='_blank' rel='noreferrer'>天气数据 · Open-Meteo</a>
-</div>
+<p id='weather-status' role='status' lang='en'>Loading weather…</p>
 
 <style>
-  .weather-status {
-    text-align: center;
-    color: hsl(var(--muted-foreground));
-    font-size: 0.875rem;
-  }
   p {
     margin: 0;
     min-height: 1.5rem;
-  }
-  a {
-    font-size: 0.7rem;
-    opacity: 0.65;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
   }
 </style>

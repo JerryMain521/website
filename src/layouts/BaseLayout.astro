@@ -49,7 +49,19 @@ const {
       <div class='flex-1 w-full'>
         <slot />
       </div>
-      <Footer />
+      <div>
+        <Footer />
+        {
+          weatherBackground && (
+            <p class='mb-5 text-center text-xs text-muted-foreground'>
+              Weather by{' '}
+              <a href='https://open-meteo.com/' target='_blank' rel='noreferrer' class='underline'>
+                Open-Meteo
+              </a>
+            </p>
+          )
+        }
+      </div>
     </div>
 
     {/* Set highlight color */}

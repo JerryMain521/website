@@ -159,11 +159,10 @@ export function initWeather() {
     sky!.dataset.day = period
     sky!.dataset.kind = kind
     sky!.dataset.intensity = intensity
-    const timeLabel = period === 'day' ? '白天' : '黑夜'
     const icon = scene === 'sunny' && period === 'night' ? '☾' : icons[scene]
     status!.textContent = reading
-      ? `${icon} ${place.name} · ${timeLabel} · ${background.label} · ${Math.round(reading.temperature)}°C`
-      : `${place.name} · 天气暂不可用`
+      ? `${icon} ${background.label} · ${Math.round(reading.temperature)}°C`
+      : 'Weather unavailable'
     animate()
   }
   async function load(force = false) {

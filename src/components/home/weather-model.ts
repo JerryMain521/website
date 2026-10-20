@@ -5,65 +5,89 @@ export type Reading = { temperature: number; code: number; day: boolean }
 export const levels = ['light', 'moderate', 'heavy'] as const
 
 export const conditions = {
-  original: { scene: 'original', label: '原版蓝色渐变', labels: [] },
-  sunny: { scene: 'sunny', label: '晴朗', labels: [] },
-  cloudy: { scene: 'cloudy', label: '多云', labels: [] },
-  overcast: { scene: 'overcast', label: '阴天', labels: [] },
-  fog: { scene: 'fog', label: '雾', labels: [] },
-  'rime-fog': { scene: 'fog', label: '雾凇', labels: [] },
-  drizzle: { scene: 'rain', label: '毛毛雨', labels: ['轻微毛毛雨', '中等毛毛雨', '浓密毛毛雨'] },
-  rain: { scene: 'rain', label: '降雨', labels: ['小雨', '中雨', '大雨'] },
-  showers: { scene: 'rain', label: '阵雨', labels: ['弱阵雨', '中等阵雨', '强阵雨'] },
+  original: { scene: 'original', label: 'Original background', labels: [] },
+  sunny: { scene: 'sunny', label: 'Clear', labels: [] },
+  cloudy: { scene: 'cloudy', label: 'Partly cloudy', labels: [] },
+  overcast: { scene: 'overcast', label: 'Overcast', labels: [] },
+  fog: { scene: 'fog', label: 'Fog', labels: [] },
+  'rime-fog': { scene: 'fog', label: 'Rime fog', labels: [] },
+  drizzle: {
+    scene: 'rain',
+    label: 'Drizzle',
+    labels: ['Light drizzle', 'Moderate drizzle', 'Dense drizzle']
+  },
+  rain: { scene: 'rain', label: 'Rain', labels: ['Light rain', 'Moderate rain', 'Heavy rain'] },
+  showers: {
+    scene: 'rain',
+    label: 'Rain showers',
+    labels: ['Light rain showers', 'Moderate rain showers', 'Heavy rain showers']
+  },
   'freezing-drizzle': {
     scene: 'rain',
-    label: '冻毛毛雨',
-    labels: ['轻微冻毛毛雨', '', '浓密冻毛毛雨']
+    label: 'Freezing drizzle',
+    labels: ['Light freezing drizzle', '', 'Dense freezing drizzle']
   },
-  'freezing-rain': { scene: 'rain', label: '冻雨', labels: ['轻冻雨', '', '强冻雨'] },
-  snow: { scene: 'snow', label: '降雪', labels: ['小雪', '中雪', '大雪'] },
-  'snow-showers': { scene: 'snow', label: '阵雪', labels: ['弱阵雪', '', '强阵雪'] },
-  'snow-grains': { scene: 'snow', label: '雪粒', labels: [] },
-  thunderstorm: { scene: 'rain', label: '雷雨', labels: ['', '雷雨', '强雷雨'] },
-  hail: { scene: 'rain', label: '雷雨伴冰雹', labels: ['雷雨伴小冰雹', '', '雷雨伴大冰雹'] }
+  'freezing-rain': {
+    scene: 'rain',
+    label: 'Freezing rain',
+    labels: ['Light freezing rain', '', 'Heavy freezing rain']
+  },
+  snow: { scene: 'snow', label: 'Snow', labels: ['Light snow', 'Moderate snow', 'Heavy snow'] },
+  'snow-showers': {
+    scene: 'snow',
+    label: 'Snow showers',
+    labels: ['Light snow showers', '', 'Heavy snow showers']
+  },
+  'snow-grains': { scene: 'snow', label: 'Snow grains', labels: [] },
+  thunderstorm: {
+    scene: 'rain',
+    label: 'Thunderstorm',
+    labels: ['', 'Thunderstorm', 'Heavy thunderstorm']
+  },
+  hail: {
+    scene: 'rain',
+    label: 'Thunderstorm with hail',
+    labels: ['Thunderstorm with light hail', '', 'Thunderstorm with heavy hail']
+  }
 } satisfies Record<string, { scene: Scene; label: string; labels: string[] }>
 export type Kind = keyof typeof conditions
 type Condition = { kind: Kind; intensity: Intensity; label: string }
 
 // Open-Meteo WMO codes; intensity here is the provider's category, not a 24h total.
 const codes: Record<number, Condition> = {
-  0: { kind: 'sunny', intensity: 'none', label: '晴朗' },
-  1: { kind: 'sunny', intensity: 'none', label: '大部晴朗' },
-  2: { kind: 'cloudy', intensity: 'none', label: '多云' },
-  3: { kind: 'overcast', intensity: 'none', label: '阴天' },
-  45: { kind: 'fog', intensity: 'none', label: '雾' },
-  48: { kind: 'rime-fog', intensity: 'none', label: '雾凇' },
-  51: { kind: 'drizzle', intensity: 'light', label: '轻微毛毛雨' },
-  53: { kind: 'drizzle', intensity: 'moderate', label: '中等毛毛雨' },
-  55: { kind: 'drizzle', intensity: 'heavy', label: '浓密毛毛雨' },
-  56: { kind: 'freezing-drizzle', intensity: 'light', label: '轻微冻毛毛雨' },
-  57: { kind: 'freezing-drizzle', intensity: 'heavy', label: '浓密冻毛毛雨' },
-  61: { kind: 'rain', intensity: 'light', label: '小雨' },
-  63: { kind: 'rain', intensity: 'moderate', label: '中雨' },
-  65: { kind: 'rain', intensity: 'heavy', label: '大雨' },
-  66: { kind: 'freezing-rain', intensity: 'light', label: '轻冻雨' },
-  67: { kind: 'freezing-rain', intensity: 'heavy', label: '强冻雨' },
-  71: { kind: 'snow', intensity: 'light', label: '小雪' },
-  73: { kind: 'snow', intensity: 'moderate', label: '中雪' },
-  75: { kind: 'snow', intensity: 'heavy', label: '大雪' },
-  77: { kind: 'snow-grains', intensity: 'none', label: '雪粒' },
-  80: { kind: 'showers', intensity: 'light', label: '弱阵雨' },
-  81: { kind: 'showers', intensity: 'moderate', label: '中等阵雨' },
-  82: { kind: 'showers', intensity: 'heavy', label: '强阵雨' },
-  85: { kind: 'snow-showers', intensity: 'light', label: '弱阵雪' },
-  86: { kind: 'snow-showers', intensity: 'heavy', label: '强阵雪' },
-  95: { kind: 'thunderstorm', intensity: 'moderate', label: '雷雨' },
-  96: { kind: 'hail', intensity: 'light', label: '雷雨伴小冰雹' },
-  97: { kind: 'thunderstorm', intensity: 'heavy', label: '强雷雨' },
-  99: { kind: 'hail', intensity: 'heavy', label: '雷雨伴大冰雹' }
+  0: { kind: 'sunny', intensity: 'none', label: 'Clear' },
+  1: { kind: 'sunny', intensity: 'none', label: 'Mostly clear' },
+  2: { kind: 'cloudy', intensity: 'none', label: 'Partly cloudy' },
+  3: { kind: 'overcast', intensity: 'none', label: 'Overcast' },
+  45: { kind: 'fog', intensity: 'none', label: 'Fog' },
+  48: { kind: 'rime-fog', intensity: 'none', label: 'Rime fog' },
+  51: { kind: 'drizzle', intensity: 'light', label: 'Light drizzle' },
+  53: { kind: 'drizzle', intensity: 'moderate', label: 'Moderate drizzle' },
+  55: { kind: 'drizzle', intensity: 'heavy', label: 'Dense drizzle' },
+  56: { kind: 'freezing-drizzle', intensity: 'light', label: 'Light freezing drizzle' },
+  57: { kind: 'freezing-drizzle', intensity: 'heavy', label: 'Dense freezing drizzle' },
+  61: { kind: 'rain', intensity: 'light', label: 'Light rain' },
+  63: { kind: 'rain', intensity: 'moderate', label: 'Moderate rain' },
+  65: { kind: 'rain', intensity: 'heavy', label: 'Heavy rain' },
+  66: { kind: 'freezing-rain', intensity: 'light', label: 'Light freezing rain' },
+  67: { kind: 'freezing-rain', intensity: 'heavy', label: 'Heavy freezing rain' },
+  71: { kind: 'snow', intensity: 'light', label: 'Light snow' },
+  73: { kind: 'snow', intensity: 'moderate', label: 'Moderate snow' },
+  75: { kind: 'snow', intensity: 'heavy', label: 'Heavy snow' },
+  77: { kind: 'snow-grains', intensity: 'none', label: 'Snow grains' },
+  80: { kind: 'showers', intensity: 'light', label: 'Light rain showers' },
+  81: { kind: 'showers', intensity: 'moderate', label: 'Moderate rain showers' },
+  82: { kind: 'showers', intensity: 'heavy', label: 'Heavy rain showers' },
+  85: { kind: 'snow-showers', intensity: 'light', label: 'Light snow showers' },
+  86: { kind: 'snow-showers', intensity: 'heavy', label: 'Heavy snow showers' },
+  95: { kind: 'thunderstorm', intensity: 'moderate', label: 'Thunderstorm' },
+  96: { kind: 'hail', intensity: 'light', label: 'Thunderstorm with light hail' },
+  97: { kind: 'thunderstorm', intensity: 'heavy', label: 'Heavy thunderstorm' },
+  99: { kind: 'hail', intensity: 'heavy', label: 'Thunderstorm with heavy hail' }
 }
 
 export function weatherCondition(code: number): Condition {
-  return codes[code] ?? { kind: 'original', intensity: 'none', label: '天气状态未知' }
+  return codes[code] ?? { kind: 'original', intensity: 'none', label: 'Weather unavailable' }
 }
 
 export function availableIntensities(kind: Kind): Intensity[] {

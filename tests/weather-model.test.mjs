@@ -32,14 +32,14 @@ test('all documented WMO codes retain their type and intensity during both day a
 
 test('rain and snow strength overrides are independent of daylight and retain actual temperature', () => {
   const reading = { temperature: 12, code: 61, day: false }
-  for (const time of ['day', 'night']) for (const [intensity, label] of [['light', '小雨'], ['moderate', '中雨'], ['heavy', '大雨']]) {
+  for (const time of ['day', 'night']) for (const [intensity, label] of [['light', 'Light rain'], ['moderate', 'Moderate rain'], ['heavy', 'Heavy rain']]) {
     const result = resolveBackground(reading, 'live', time, intensity)
     assert.equal(result.period, time)
     assert.equal(result.label, label)
     assert.equal(result.intensity, intensity)
   }
   assert.equal(reading.temperature, 12)
-  assert.equal(resolveBackground(reading, 'snow', 'live', 'heavy').label, '大雪')
+  assert.equal(resolveBackground(reading, 'snow', 'live', 'heavy').label, 'Heavy snow')
   assert.equal(resolveBackground(reading, 'snow', 'live', 'heavy').period, 'night')
 })
 
@@ -57,7 +57,7 @@ test('unsupported intensity categories are never invented for freezing rain or s
 test('missing data and unknown codes keep original background; manual preview still works', () => {
   assert.equal(resolveBackground(null, 'live', 'night').scene, 'original')
   assert.equal(resolveBackground({ code: 123, day: false, temperature: 10 }, 'live', 'live').scene, 'original')
-  assert.equal(resolveBackground(null, 'rain', 'night', 'heavy').label, '大雨')
+  assert.equal(resolveBackground(null, 'rain', 'night', 'heavy').label, 'Heavy rain')
   assert.equal(resolveBackground(null, 'original', 'night', 'heavy').scene, 'original')
 })
 
