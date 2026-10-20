@@ -9,6 +9,7 @@ import PageLayout from '@/layouts/BaseLayout.astro'
 import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
+import WeatherControls from '@/components/home/WeatherControls.astro'
 import config from '@/site-config'
 
 const languages = ['C', 'C++', 'Python', 'Java']
@@ -29,7 +30,7 @@ if (!images[imagePath])
   )
 ---
 
-<PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
+<PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9' weatherBackground>
   <main class='flex w-full flex-col items-center'>
     <section class='animate mb-10 flex flex-col items-center gap-y-7' id='content-header'>
       <Image
@@ -46,19 +47,16 @@ if (!images[imagePath])
           <Label title='China / Nanjing'>
             <Icon name='location' class='size-5' slot='icon' />
           </Label>
-          <Label
-            title='Github'
-            as='a'
-            href='https://github.com/JerryMain521'
-            target='_blank'
-          >
+          <Label title='Github' as='a' href='https://github.com/JerryMain521' target='_blank'>
             <Icon name='github' class='size-5' slot='icon' />
           </Label>
         </div>
       </div>
 
       {/* Get template */}
-      {/*<a
+      <WeatherControls />
+      {
+        /*<a
         href='https://github.com/cworld1/astro-theme-pure'
         target='_blank'
         class='flex flex-row items-center gap-x-3 rounded-full border bg-background px-4 py-2 text-sm shadow-sm transition-shadow hover:shadow-md'
@@ -70,13 +68,15 @@ if (!images[imagePath])
           <span class='size-2 rounded-full bg-green-400'></span>
         </span>
         <p class='font-medium text-muted-foreground'>Get Template</p>
-      </a>*/}
-
+      </a>*/
+      }
     </section>
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
       <Section title='About'>
-        <p class='text-muted-foreground'>Undergraduate / <em>Retired</em> Minecraft Gamer / Coding Amateur</p>
+        <p class='text-muted-foreground'>
+          Undergraduate / <em>Retired</em> Minecraft Gamer / Coding Amateur
+        </p>
         <p class='text-muted-foreground'>
           Got a bit of C++ educated from primary school, but didn't get far.<br />
           Now learning hardware at SEU, and patching up software online.<br />
@@ -169,7 +169,8 @@ if (!images[imagePath])
         </div>
       </Section>
 
-      {/* 
+      {
+        /* 
       <Section title='Certifications'>
         <Card
           as='a'
@@ -179,7 +180,8 @@ if (!images[imagePath])
           href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
         />
       </Section>
-      */}
+      */
+      }
 
       <Section title='Skills'>
         <SkillLayout title='Languages' skills={languages} />

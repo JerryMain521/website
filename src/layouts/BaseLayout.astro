@@ -2,6 +2,7 @@
 import { Footer, Header, ThemeProvider } from 'astro-pure/components/basic'
 import type { SiteMeta } from 'astro-pure/types'
 import BaseHead from '@/components/BaseHead.astro'
+import WeatherSky from '@/components/home/WeatherSky.astro'
 import config from '@/site-config'
 
 // Import the global.css file here so that it is included on
@@ -12,11 +13,13 @@ import '@/assets/styles/app.css'
 interface Props {
   meta: SiteMeta
   highlightColor?: string
+  weatherBackground?: boolean
 }
 
 const {
   meta: { articleDate, description = config.description, ogImage, title },
   highlightColor,
+  weatherBackground = false,
   ...props
 } = Astro.props
 ---
@@ -28,6 +31,7 @@ const {
   </head>
 
   <body class='flex justify-center bg-background text-foreground' {...props}>
+    {weatherBackground && <WeatherSky />}
     {
       highlightColor && (
         <div
