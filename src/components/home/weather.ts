@@ -116,26 +116,34 @@ export function initWeather() {
         p.x -= delta * (drizzle ? 0.012 : 0.03 + style.level * 0.018) * gust
       } else {
         const grains = kind === 'snow-grains'
+        const foreground = scene === 'snow' && !grains && index % 4 === 0
         const radius = stars
           ? p.size * 0.5
           : grains
             ? p.size * 0.5
-            : p.size * (0.65 + style.level * 0.2)
+            : p.size * (0.9 + style.level * 0.4) * (foreground ? 1.6 : 1)
+        if (scene === 'snow' && !grains) {
+          ctx.globalAlpha = (foreground ? 0.7 : 0.45 + style.level * 0.035) * center * pulse
+        }
         ctx.beginPath()
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2)
         ctx.fill()
         if (scene === 'snow') {
-          if (!grains && style.level === 3 && index % 5 === 0) {
+          if (foreground && style.level >= 2) {
             ctx.strokeStyle = dark ? '#e8f2ff' : '#d0dfe8'
-            ctx.lineWidth = 0.7
+            ctx.lineWidth = 0.9
             ctx.beginPath()
-            ctx.moveTo(p.x - radius * 1.7, p.y)
-            ctx.lineTo(p.x + radius * 1.7, p.y)
-            ctx.moveTo(p.x, p.y - radius * 1.7)
-            ctx.lineTo(p.x, p.y + radius * 1.7)
+            for (let arm = 0; arm < 6; arm++) {
+              const angle = (arm * Math.PI) / 3 + p.phase
+              ctx.moveTo(p.x, p.y)
+              ctx.lineTo(
+                p.x + Math.cos(angle) * radius * 1.35,
+                p.y + Math.sin(angle) * radius * 1.35
+              )
+            }
             ctx.stroke()
           }
-          p.y += delta * p.speed * 0.025 * style.speed * (grains ? 2.2 : 1)
+          p.y += delta * p.speed * 0.025 * style.speed * (grains ? 2.2 : foreground ? 1.35 : 1)
           p.x +=
             delta * (0.008 + Math.sin(elapsed / 1300 + p.phase) * 0.024) * (1 + style.level * 0.2)
         }

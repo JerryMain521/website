@@ -112,7 +112,7 @@ export function resolveBackground(
 export function particleStyle(scene: Scene, intensity: Intensity, mobile: boolean) {
   const level = intensity === 'heavy' ? 3 : intensity === 'moderate' ? 2 : 1
   const count =
-    scene === 'rain' ? [0, 55, 115, 210][level] : scene === 'snow' ? [0, 32, 75, 145][level] : 60
+    scene === 'rain' ? [0, 55, 115, 210][level] : scene === 'snow' ? [0, 40, 100, 210][level] : 60
   return {
     count: Math.round(count * (mobile ? 0.55 : 1)),
     level,
