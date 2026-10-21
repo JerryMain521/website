@@ -23,7 +23,7 @@ const related = forumTopics.filter((item) => topic.related.includes(item.id))
   weatherBackground='subtle'
 >
   <main class='forum-shell forum-detail'>
-    <a class='forum-back' href='/forum'>← All records</a>
+    <a class='forum-back' href='/board'>← All records</a>
     <header id='content-header' class='forum-detail-header animate'>
       <div class='forum-eyebrow'>BOARD / #{topic.number} <span class='demo-badge'>DEMO</span></div>
       <h1>{topic.title}</h1>
@@ -50,7 +50,7 @@ const related = forumTopics.filter((item) => topic.related.includes(item.id))
         <section class='forum-related'>
           <h2>Related records</h2>{
             related.map((item) => (
-              <a href={`/forum/${item.id}`}>
+              <a href={`/board/${item.id}`}>
                 <span>#{item.number}</span>
                 {item.title}
                 <span aria-hidden='true'>↗</span>
