@@ -1,0 +1,187 @@
+---
+import { forumCategories, forumStatuses, forumTopics } from '../../data/forum'
+
+import BaseLayout from '@/layouts/BaseLayout.astro'
+
+import '@/assets/styles/forum.css'
+
+export const prerender = true
+---
+
+<BaseLayout
+  meta={{ title: 'Forum · 运动问答', description: '记录运动中的具体问题、讨论与后续反馈。' }}
+  weatherBackground='subtle'
+>
+  <main class='forum-shell'>
+    <header class='forum-hero'>
+      <div class='forum-eyebrow'>JERRYMAIN ISLAND / FORUM <span class='demo-badge'>DEMO</span></div>
+      <h1>运动中的问题，<br />一起慢慢弄明白。</h1>
+      <p>从一个具体的困惑开始，留下讨论、分歧和实践反馈，让经验逐步成为可以参考的方法。</p>
+    </header>
+
+    <div class='forum-grid'>
+      <section aria-label='运动问题列表'>
+        <div class='forum-toolbar'>
+          <label class='forum-search'
+            ><span aria-hidden='true'>⌕</span><input
+              id='forum-search'
+              type='search'
+              placeholder='搜索问题、关键词…'
+              aria-label='搜索运动问题'
+            /></label
+          >
+          <label class='forum-sort'
+            ><span class='sr-only'>排序</span><select id='forum-sort'
+              ><option value='oldest'>讨论时间 · 从早到晚</option><option value='newest'
+                >讨论时间 · 从晚到早</option
+              ></select
+            ></label
+          >
+        </div>
+        <div class='forum-filters' aria-label='问题分类'>
+          {
+            ['全部', ...forumCategories].map((category) => (
+              <button
+                type='button'
+                class='forum-filter'
+                data-category={category}
+                aria-pressed={category === '全部'}
+              >
+                {category}
+              </button>
+            ))
+          }
+        </div>
+        <div class='forum-list-head'>
+          <span id='forum-count' role='status' aria-live='polite'>{forumTopics.length} 个问题</span
+          ><span>按首次讨论时间排列</span>
+        </div>
+        <ul class='forum-list' id='forum-list'>
+          {
+            forumTopics.map((topic) => (
+              <li
+                data-topic
+                data-category={topic.category}
+                data-status={topic.status}
+                data-date={topic.date}
+                data-number={topic.number}
+                data-search={`${topic.title} ${topic.summary} ${topic.category}`}
+              >
+                <a class='forum-row' href={`/forum/${topic.id}`}>
+                  <span class='forum-topic-icon' aria-hidden='true'>
+                    ?
+                  </span>
+                  <div class='forum-row-body'>
+                    <div class='forum-row-title'>
+                      <>
+                        <h2>{topic.title}</h2>
+                        <span class='forum-status' data-status={topic.status}>
+                          {topic.status}
+                        </span>
+                      </>
+                    </div>
+                    <p>{topic.summary}</p>
+                    <div class='forum-row-meta'>
+                      <>
+                        <span>#{topic.number}</span>
+                        <span class='forum-tag'>{topic.category}</span>
+                        <time datetime={topic.date}>{topic.displayDate}</time>
+                        <span>{topic.timeline.length} 段讨论摘要</span>
+                      </>
+                    </div>
+                  </div>
+                  <span class='forum-row-arrow' aria-hidden='true'>
+                    ↗
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <div id='forum-empty' class='forum-empty' hidden>
+          <h2>暂时没有匹配的问题</h2><p>试试其他关键词，或者清除筛选条件。</p><button
+            id='forum-reset'
+            type='button'>清除筛选</button>
+        </div>
+        <p class='forum-footnote'>当前展示 4 条群聊整理示例，内容与状态均待审核。</p>
+      </section>
+
+      <aside class='forum-sidebar'>
+        <section class='forum-note'>
+          <span class='forum-eyebrow'>ABOUT THIS SPACE</span><h2>把讨论留下来</h2><p>
+            这里收录训练、动作和恢复中的具体问题。每一页都保留当前进展，以及尚未得到回答的部分。
+          </p><a href='#forum-workflow'>了解整理方式 ↓</a>
+        </section>
+        <section class='forum-status-filter'>
+          <h2>讨论进展</h2><label for='forum-status' class='sr-only'>按讨论状态筛选</label><select
+            id='forum-status'
+            ><option value='全部'>全部状态</option>{
+              forumStatuses.map((status) => <option value={status}>{status}</option>)
+            }</select
+          ><p>有答复之后，还可以继续追问、查证和记录实践反馈。</p>
+        </section>
+        <section id='forum-workflow' class='forum-workflow'>
+          <h2>从问题到方法</h2><ol>
+            <li><span>01</span>描述具体问题</li><li><span>02</span>整理讨论与分歧</li><li>
+              <span>03</span>补充资料与反馈
+            </li><li><span>04</span>成熟后整理为文章</li>
+          </ol><a href='/blog'>阅读 Blog →</a>
+        </section>
+      </aside>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  const search = document.querySelector<HTMLInputElement>('#forum-search')!
+  const status = document.querySelector<HTMLSelectElement>('#forum-status')!
+  const sort = document.querySelector<HTMLSelectElement>('#forum-sort')!
+  const list = document.querySelector<HTMLUListElement>('#forum-list')!
+  const rows = Array.from(list.querySelectorAll<HTMLLIElement>('[data-topic]'))
+  const filters = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('[data-category].forum-filter')
+  )
+  let category = '全部'
+
+  function update() {
+    const query = search.value.trim().toLocaleLowerCase()
+    let count = 0
+    rows
+      .sort((a, b) => {
+        const order = `${a.dataset.date}-${a.dataset.number}`.localeCompare(
+          `${b.dataset.date}-${b.dataset.number}`
+        )
+        return sort.value === 'oldest' ? order : -order
+      })
+      .forEach((row) => {
+        row.hidden = !(
+          (category === '全部' || row.dataset.category === category) &&
+          (status.value === '全部' || row.dataset.status === status.value) &&
+          (row.dataset.search ?? '').toLocaleLowerCase().includes(query)
+        )
+        if (!row.hidden) count++
+        list.append(row)
+      })
+    document.querySelector('#forum-count')!.textContent = `${count} 个问题`
+    document.querySelector<HTMLElement>('#forum-empty')!.hidden = count !== 0
+    filters.forEach((button) =>
+      button.setAttribute('aria-pressed', String(button.dataset.category === category))
+    )
+  }
+  search.addEventListener('input', update)
+  status.addEventListener('change', update)
+  sort.addEventListener('change', update)
+  filters.forEach((button) =>
+    button.addEventListener('click', () => {
+      category = button.dataset.category!
+      update()
+    })
+  )
+  document.querySelector('#forum-reset')!.addEventListener('click', () => {
+    search.value = ''
+    status.value = '全部'
+    category = '全部'
+    update()
+    search.focus()
+  })
+</script>

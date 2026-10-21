@@ -1,0 +1,98 @@
+---
+import { forumTopics } from '../../data/forum'
+
+import BaseLayout from '@/layouts/BaseLayout.astro'
+
+import '@/assets/styles/forum.css'
+
+export const prerender = true
+export function getStaticPaths() {
+  return forumTopics.map((topic) => ({ params: { id: topic.id }, props: { topic } }))
+}
+const { topic } = Astro.props
+const related = forumTopics.filter((item) => topic.related.includes(item.id))
+---
+
+<BaseLayout
+  meta={{ title: `${topic.title} · Forum`, description: topic.summary }}
+  weatherBackground='subtle'
+>
+  <main class='forum-shell forum-detail'>
+    <a class='forum-back' href='/forum'>← 全部运动问题</a>
+    <header class='forum-detail-header'>
+      <div class='forum-eyebrow'>FORUM / #{topic.number} <span class='demo-badge'>DEMO</span></div>
+      <h1>{topic.title}</h1>
+      <div class='forum-row-meta'>
+        <span class='forum-status' data-status={topic.status}>{topic.status}</span><span
+          class='forum-tag'>{topic.category}</span
+        ><time datetime={topic.date}>{topic.displayDate}首次讨论</time>
+      </div>
+    </header>
+    <div class='forum-grid'>
+      <article class='forum-record'>
+        <section class='forum-current' id='current'>
+          <div class='forum-eyebrow'>CURRENT SUMMARY</div><h2>当前整理</h2><p>
+            {topic.conclusion}
+          </p><span class='forum-small-note'>群聊经验摘要 · 尚未形成完整操作指南</span>
+        </section>
+        <section id='background'><h2>问题背景</h2><p>{topic.background}</p></section>
+        <section id='discussion'>
+          <h2>讨论记录 <span class='forum-section-note'>保留过程，也保留修正</span></h2><ol
+            class='forum-timeline'
+          >
+            {
+              topic.timeline.map((entry) => (
+                <li>
+                  <>
+                    <div class='forum-timeline-meta'>
+                      <>
+                        <span>{entry.label}</span>
+                        <span>{entry.time}</span>
+                      </>
+                    </div>
+                    <p>{entry.text}</p>
+                  </>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+        <section id='pending'>
+          <h2>还需要补充什么？</h2><ul class='forum-pending'>
+            {topic.missing.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+        <footer class='forum-source'>
+          <h2>来源与整理说明</h2><p>
+            来源：运科交流群，{
+              topic.displayDate
+            }相关讨论。以上为编辑整理与转述，未展示参与者身份。讨论记录与“待补充”清单分开呈现；本页为栏目演示，尚未完成资料核查。
+          </p><p>更新于 2026 年 10 月 21 日 · 暂无新增实践反馈</p>
+        </footer>
+      </article>
+      <aside class='forum-sidebar'>
+        <nav class='forum-detail-nav' aria-label='本页目录'>
+          <h2>本页内容</h2><a href='#current'>当前整理</a><a href='#background'>问题背景</a><a
+            href='#discussion'>讨论记录</a
+          ><a href='#pending'>待补充内容</a>
+        </nav>
+        <section class='forum-related'>
+          <h2>相关问题</h2>{
+            related.map((item) => (
+              <a href={`/forum/${item.id}`}>
+                <span>#{item.number}</span>
+                {item.title}
+                <span aria-hidden='true'>↗</span>
+              </a>
+            ))
+          }
+        </section>
+        <section class='forum-note'>
+          <h2>下一步</h2><p>
+            补齐适用条件、操作步骤和反馈后，可以整理为 Blog 文章，并在这里保留讨论的来路。
+          </p><a href='/blog'>前往 Blog →</a>
+        </section>
+      </aside>
+    </div>
+  </main>
+</BaseLayout>
