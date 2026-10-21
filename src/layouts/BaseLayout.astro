@@ -55,17 +55,7 @@ const {
         <slot />
       </div>
       <div>
-        <Footer />
-        {
-          weatherBackground && (
-            <p class='mb-5 text-center text-xs text-muted-foreground'>
-              Weather by{' '}
-              <a href='https://open-meteo.com/' target='_blank' rel='noreferrer' class='underline'>
-                Open-Meteo
-              </a>
-            </p>
-          )
-        }
+        <Footer weatherCredit={!!weatherBackground} />
       </div>
     </div>
 

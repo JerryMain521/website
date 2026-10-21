@@ -1,0 +1,130 @@
+---
+import IndexPage from '@/layouts/IndexPage.astro'
+
+import { boardDate, boardLabel, getForumTopics } from '../../data/forum'
+
+import '@/assets/styles/forum.css'
+
+export const prerender = true
+const forumTopics = await getForumTopics()
+const documentedCount = forumTopics.filter((topic) => topic.documented).length
+---
+
+<IndexPage
+  title='Board'
+  meta={{
+    title: 'Board',
+    description: 'Questions, discussion notes, and follow-up from our sports community.'
+  }}
+>
+  <div id='content' class='board-issues animate'>
+    <section class='board-panel' aria-label='Sports records'>
+      <div class='board-panel-toolbar'>
+        <div class='board-tabs' aria-label='Record views'>
+          <button type='button' data-view='all' aria-pressed='true'
+            ><span class='board-open-icon' aria-hidden='true'></span>All records <span
+              class='board-counter'>{forumTopics.length}</span
+            ></button
+          >
+          <button type='button' data-view='documented' aria-pressed='false'
+            >Documented <span class='board-counter'>{documentedCount}</span></button
+          >
+        </div>
+      </div>
+      <ul id='forum-list' class='board-list'>
+        {
+          forumTopics.map((topic) => (
+            <li
+              data-topic
+              data-category={topic.category}
+              data-status={boardLabel(topic.status)}
+              data-date={topic.date}
+              data-number={topic.number}
+              data-documented={String(topic.documented)}
+            >
+              <a class='board-row' href={`/forum/${topic.id}`}>
+                <span class='board-open-icon' aria-hidden='true' />
+                <div class='board-row-content'>
+                  <div class='board-row-title'>
+                    <>
+                      <h2>{topic.title}</h2>
+                      <span class='board-label'>{boardLabel(topic.category)}</span>
+                      <span class='forum-status' data-status={topic.status}>
+                        {boardLabel(topic.status)}
+                      </span>
+                    </>
+                  </div>
+                  <div class='board-row-meta'>
+                    <>
+                      <span>#{topic.number}</span>
+                      <span>
+                        Group notes · <time datetime={topic.date}>{boardDate(topic.date)}</time>
+                      </span>
+                    </>
+                  </div>
+                </div>
+                <span
+                  class='board-excerpts'
+                  aria-label={`${topic.excerptCount} discussion excerpts`}
+                  title='Discussion excerpts, not website comments'
+                >
+                  <svg width='16' height='16' viewBox='0 0 16 16' fill='none' aria-hidden='true'>
+                    <path
+                      d='M3 2.5h10a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5H8L4.5 14v-3.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z'
+                      stroke='currentColor'
+                      stroke-width='1.4'
+                      stroke-linejoin='round'
+                    />
+                  </svg>
+                  {topic.excerptCount}
+                  <span class='board-excerpts-label'>excerpts</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div id='forum-empty' class='forum-empty' hidden>
+        <h2>No matching records</h2><p>Try another view.</p><button id='forum-reset' type='button'
+          >View all records</button
+        >
+      </div>
+    </section>
+    <span id='forum-count' class='sr-only' role='status' aria-live='polite'>
+      {forumTopics.length} records
+    </span>
+  </div>
+</IndexPage>
+
+<script>
+  const list = document.querySelector<HTMLUListElement>('#forum-list')!
+  const rows = Array.from(list.querySelectorAll<HTMLLIElement>('[data-topic]'))
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-view]'))
+  let view = 'all'
+
+  function update() {
+    let count = 0
+    rows.forEach((row) => {
+      row.hidden = !(view === 'all' || row.dataset.documented === 'true')
+      if (!row.hidden) count++
+      list.append(row)
+    })
+    document.querySelector('#forum-count')!.textContent =
+      `${count} ${count === 1 ? 'record' : 'records'}`
+    document.querySelector<HTMLElement>('#forum-empty')!.hidden = count !== 0
+    tabs.forEach((button) =>
+      button.setAttribute('aria-pressed', String(button.dataset.view === view))
+    )
+  }
+  tabs.forEach((button) =>
+    button.addEventListener('click', () => {
+      view = button.dataset.view!
+      update()
+    })
+  )
+  document.querySelector('#forum-reset')!.addEventListener('click', () => {
+    view = 'all'
+    update()
+    tabs.find((button) => button.dataset.view === 'all')?.focus()
+  })
+</script>

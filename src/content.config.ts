@@ -1,5 +1,5 @@
-import { glob } from 'astro/loaders'
 import { defineCollection, z } from 'astro:content'
+import { glob } from 'astro/loaders'
 
 function removeDupsAndLowerCase(array: string[]) {
   if (!array.length) return array
@@ -56,4 +56,23 @@ const docs = defineCollection({
     })
 })
 
-export const collections = { blog, docs }
+const board = defineCollection({
+  loader: glob({ base: './src/content/board', pattern: '**/*.md' }),
+  schema: z.object({
+    number: z.string().regex(/^\d+$/),
+    title: z.string(),
+    summary: z.string(),
+    category: z.string(),
+    status: z.string(),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    updatedDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    documented: z.boolean().default(false),
+    draft: z.boolean().default(false),
+    related: z.array(z.string()).default([])
+  })
+})
+
+export const collections = { blog, docs, board }

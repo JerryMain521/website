@@ -1,0 +1,40 @@
+import { getCollection } from 'astro:content'
+
+// Content is authored in src/content/board/*.md.
+export async function getForumTopics() {
+  const entries = await getCollection('board', ({ data }) => !data.draft)
+  return entries
+    .map((entry) => ({
+      ...entry.data,
+      id: entry.id,
+      entry,
+      excerptCount: (entry.body?.match(/^### /gm) ?? []).length
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date) || Number(a.number) - Number(b.number))
+}
+
+// UI labels stay separate from the original Chinese discussion content.
+const boardLabels: Record<string, string> = {
+  恢复与放松: 'Recovery',
+  训练方法: 'Training',
+  动作技术: 'Technique',
+  待补充: 'Needs details',
+  待反馈: 'Awaiting feedback',
+  有分歧: 'Under discussion',
+  提出问题: 'Question',
+  经验交流: 'Shared experience',
+  补充情境: 'More context',
+  群友答复: 'Response',
+  初步回复: 'Initial response',
+  出现分歧: 'Different views',
+  观点修正: 'Revised view',
+  仍待核查: 'Needs verification'
+}
+export const boardLabel = (value: string) => boardLabels[value] ?? value
+export const boardDate = (date: string) =>
+  new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(new Date(`${date}T12:00:00Z`))

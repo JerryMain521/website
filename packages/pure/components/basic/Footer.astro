@@ -3,6 +3,11 @@ import config from 'virtual:config'
 
 import { Icon } from '../user'
 
+interface Props {
+  weatherCredit?: boolean
+}
+
+const { weatherCredit = false } = Astro.props
 const footerConf = config.footer
 let social = footerConf.social || {}
 
@@ -61,6 +66,14 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
               &
               <a href='https://github.com/cworld1/astro-theme-pure' target='_blank'>Pure</a>
               theme powered
+              {
+                weatherCredit && (
+                  <>
+                    {' · Weather by '}
+                    <a href='https://open-meteo.com/' target='_blank' rel='noreferrer'>Open-Meteo</a>
+                  </>
+                )
+              }
             </span>
           )
         }
