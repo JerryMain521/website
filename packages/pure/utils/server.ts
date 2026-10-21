@@ -1,24 +1,27 @@
-import { type CollectionEntry, type CollectionKey, getCollection } from 'astro:content'
+import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content'
 
-type Collections = CollectionEntry<CollectionKey>[]
+// These helpers operate on article collections with publish dates and tags.
+// Other collections, such as Board records, have their own schemas and loaders.
+type ArticleCollection = Extract<CollectionKey, 'blog' | 'docs'>
+type Collections = CollectionEntry<ArticleCollection>[]
 
 export const prod = import.meta.env.PROD
 
 /** Note: this function filters out draft posts based on the environment */
-export async function getBlogCollection(contentType: CollectionKey = 'blog') {
+export async function getBlogCollection(contentType: ArticleCollection = 'blog') {
   return await getCollection(contentType, ({ data }: CollectionEntry<typeof contentType>) => {
     // Not in production & draft is not false
     return prod ? !data.draft : true
   })
 }
 
-function getYearFromCollection<T extends CollectionKey>(
+function getYearFromCollection<T extends ArticleCollection>(
   collection: CollectionEntry<T>
 ): number | undefined {
   const dateStr = collection.data.updatedDate ?? collection.data.publishDate
   return dateStr ? new Date(dateStr).getFullYear() : undefined
 }
-export function groupCollectionsByYear<T extends CollectionKey>(
+export function groupCollectionsByYear<T extends ArticleCollection>(
   collections: Collections
 ): [number, CollectionEntry<T>[]][] {
   const collectionsByYear = collections.reduce((acc, collection) => {
