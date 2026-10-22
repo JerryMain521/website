@@ -1,11 +1,15 @@
 ---
 import { render } from 'astro:content'
 
-import BaseLayout from '@/layouts/BaseLayout.astro'
+import 'katex/dist/katex.min.css'
+
+import { MediumZoom } from 'astro-pure/advanced'
+import { TOC } from 'astro-pure/components/pages'
+import { Icon } from 'astro-pure/user'
+import PageLayout from '@/layouts/ContentLayout.astro'
+import { integ } from '@/site-config'
 
 import { boardDate, boardLabel, getForumTopics } from '../../data/forum'
-
-import '@/assets/styles/forum.css'
 
 export const prerender = true
 export async function getStaticPaths() {
@@ -18,53 +22,121 @@ const forumTopics = await getForumTopics()
 const related = forumTopics.filter((item) => topic.related.includes(item.id))
 ---
 
-<BaseLayout
+<PageLayout
   meta={{ title: `${topic.title} · Board`, description: topic.summary }}
   weatherBackground='subtle'
+  wide
+  back='/board'
 >
-  <main class='forum-shell forum-detail'>
-    <a class='forum-back' href='/board'>← All records</a>
-    <header id='content-header' class='forum-detail-header animate'>
-      <div class='forum-eyebrow'>BOARD / #{topic.number} <span class='demo-badge'>DEMO</span></div>
-      <h1>{topic.title}</h1>
-      <div class='forum-row-meta'>
-        <span class='forum-status' data-status={topic.status}>{boardLabel(topic.status)}</span><span
-          class='forum-tag'>{topic.category}</span
-        ><time datetime={topic.date}>First discussed {boardDate(topic.date)}</time>
-      </div>
-    </header>
-    <div class='forum-grid'>
-      <article id='content' class='forum-record animate'>
-        <div class='board-markdown'><Content /></div>
-        <p class='forum-small-note'>Updated {boardDate(topic.updatedDate ?? topic.date)}</p>
-      </article>
-      <aside class='forum-sidebar'>
-        <nav class='forum-detail-nav' aria-label='On this page'>
-          <h2>On this page</h2>
+  {!!headings.length && <TOC {headings} class='article-toc weather-card' slot='sidebar' />}
+
+  <Fragment slot='header'>
+    <div class='article-info max-lg:mx-auto'>
+      <div class='flex flex-wrap gap-x-4 gap-y-2 text-xs leading-6 text-muted-foreground'>
+        <span>Board / #{topic.number}</span>
+        <div class='flex flex-wrap items-center gap-1'>
+          <Icon name='calendar' class='size-5' />
+          <span>First discussed <time datetime={topic.date}>{boardDate(topic.date)}</time></span>
           {
-            headings
-              .filter((heading) => heading.depth === 2)
-              .map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)
+            topic.updatedDate && (
+              <span>
+                {' '}
+                / Updated <time datetime={topic.updatedDate}>{boardDate(topic.updatedDate)}</time>
+              </span>
+            )
           }
-        </nav>
-        <section class='forum-related'>
-          <h2>Related records</h2>{
-            related.map((item) => (
-              <a href={`/board/${item.id}`}>
-                <span>#{item.number}</span>
-                {item.title}
-                <span aria-hidden='true'>↗</span>
-              </a>
-            ))
-          }
-        </section>
-        <section class='forum-note'>
-          <h2>Next steps</h2><p>
-            Once context, steps, and feedback are complete, the discussion can become a Blog article
-            linked to this record.
-          </p><a href='/blog'>Read the Blog →</a>
-        </section>
-      </aside>
+        </div>
+        <span class='flex items-center gap-1'>
+          <Icon name='hashtag' class='size-5' />
+          {boardLabel(topic.category)}
+        </span>
+        <span class='board-status' data-status={topic.status}>{boardLabel(topic.status)}</span>
+      </div>
+      <h1 class='mt-4 text-2xl font-medium sm:mb-2 sm:mt-6 sm:text-3xl'>{topic.title}</h1>
+      <div class='mt-3 italic'>
+        <blockquote class='text-sm text-muted-foreground'><q>{topic.summary}</q></blockquote>
+      </div>
     </div>
-  </main>
-</BaseLayout>
+    <div class='mt-4 w-1/2 border-t max-md:mx-auto sm:mt-6 sm:w-1/3'></div>
+  </Fragment>
+
+  <Content />
+
+  <Fragment slot='bottom'>
+    {
+      related.length > 0 && (
+        <nav class='mt-3 sm:mt-6' aria-label='Related records'>
+          <ul class='grid gap-2 sm:grid-cols-2'>
+            {related.map((item, index) => (
+              <li class:list={['min-w-0', index % 2 === 1 && 'text-right']}>
+                <a
+                  class:list={[
+                    'group inline-flex max-w-full items-center gap-x-2 rounded-xl px-4 py-2 no-underline transition-colors duration-300 hover:bg-muted',
+                    index % 2 === 1 && 'flex-row-reverse'
+                  ]}
+                  href={`/board/${item.id}`}
+                >
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke-width='2.5'
+                    stroke-linecap='round'
+                    stroke-linejoin='round'
+                    aria-hidden='true'
+                    class:list={[
+                      'shrink-0 stroke-muted-foreground transition-colors group-hover:stroke-primary',
+                      index % 2 === 0 && 'rotate-180'
+                    ]}
+                  >
+                    <line
+                      x1='5'
+                      y1='12'
+                      x2='19'
+                      y2='12'
+                      class='translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:scale-x-100'
+                    />
+                    <polyline
+                      points='12 5 19 12 12 19'
+                      class='translate-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1'
+                    />
+                  </svg>
+                  <span class='truncate font-medium transition-colors'>{item.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+  </Fragment>
+</PageLayout>
+
+{integ.mediumZoom.enable && <MediumZoom />}
+
+<style>
+  .board-status {
+    display: inline-block;
+    align-self: center;
+    border: 1px solid hsl(var(--border));
+    border-radius: 999px;
+    padding: 0 0.5rem;
+    font-size: 0.6875rem;
+    line-height: 1.5rem;
+    white-space: nowrap;
+  }
+  .board-status[data-status='待反馈'] {
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.3);
+    background: hsl(var(--primary) / 0.05);
+  }
+  .board-status[data-status='有分歧'] {
+    color: hsl(28 65% 44%);
+    border-color: hsl(28 65% 50% / 0.25);
+    background: hsl(28 65% 50% / 0.06);
+  }
+  :global(.dark) .board-status[data-status='有分歧'] {
+    color: hsl(35 75% 72%);
+  }
+</style>

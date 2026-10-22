@@ -36,11 +36,11 @@ body[data-weather-background='subtle'] .weather-page #content > h2 {
 }
 body[data-weather-background='subtle'] .weather-page #content > blockquote {
   grid-template-columns: auto minmax(0, 1fr);
-  border-color: hsl(var(--primary) / 0.3);
-  background-color: hsl(var(--primary) / 0.045);
-  border-radius: 0 0.75rem 0.75rem 0;
-  padding-block: 1rem;
-  padding-inline-end: 1rem;
+  border: 1px solid hsl(var(--border) / 0.6);
+  background-color: hsl(var(--muted) / 0.45);
+  border-radius: 0.75rem;
+  padding: 1rem 1.6rem;
+  font-style: normal;
 }
 body[data-weather-background='subtle'] .weather-page #content > blockquote > samp {
   min-width: 0;
