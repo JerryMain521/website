@@ -6,7 +6,7 @@ category: '恢复与放松'
 status: '待补充'
 date: '2026-10-17'
 updatedDate: '2026-10-22'
-documented: false
+documented: true
 draft: false
 related:
   - foam-roller-pain
