@@ -112,6 +112,14 @@ const {
   })
 </script>
 <style>
+  :global(.article-toc) {
+    display: block;
+    padding: 1rem;
+  }
+  :global(.article-toc .toc-item.highlight-bg-translucent) {
+    background-color: hsl(var(--primary) / 0.07);
+  }
+
   .weather-page:not(.weather-page-wide) {
     max-width: 60rem;
     margin-inline: auto;
