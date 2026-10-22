@@ -558,32 +558,6 @@
   font-weight: 600;
   line-height: 1.65;
 }
-.board-open-icon {
-  width: 17px;
-  height: 17px;
-  display: inline-block;
-  border: 2px solid #299a49;
-  border-radius: 50%;
-  position: relative;
-  flex-shrink: 0;
-  margin-top: 3px;
-}
-.board-open-icon::after {
-  content: '';
-  width: 3px;
-  height: 3px;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  background: #299a49;
-  border-radius: 50%;
-}
-.dark .board-open-icon {
-  border-color: #3fb950;
-}
-.dark .board-open-icon::after {
-  background: #3fb950;
-}
 .board-pin-meta {
   display: flex;
   justify-content: space-between;
@@ -631,15 +605,6 @@
   color: hsl(var(--foreground));
   font-weight: 600;
 }
-.board-tabs .board-open-icon {
-  width: 14px;
-  height: 14px;
-  margin: 0;
-}
-.board-tabs .board-open-icon::after {
-  top: 3.5px;
-  left: 3.5px;
-}
 .board-counter {
   display: inline-block;
   border-radius: 20px;
@@ -657,11 +622,38 @@
   border-top: 1px solid hsl(var(--border));
 }
 .board-row {
+  --board-state-color: #976b29;
   display: flex;
   align-items: start;
   gap: 12px;
   padding: 20px 20px;
   color: inherit;
+}
+.board-row[data-state='resolved'] {
+  --board-state-color: #257e74;
+}
+.dark .board-row {
+  --board-state-color: #c4a578;
+}
+.dark .board-row[data-state='resolved'] {
+  --board-state-color: #79b5aa;
+}
+.board-state-marker {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  height: 22px;
+  margin-top: 1px;
+  border: 1px solid color-mix(in srgb, var(--board-state-color) 45%, transparent);
+  border-radius: 4px;
+  color: var(--board-state-color);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+.board-row[data-state='resolved'] .board-state-marker {
+  background: color-mix(in srgb, var(--board-state-color) 14%, transparent);
 }
 .board-row:hover {
   background: hsl(var(--primary) / 0.045);
@@ -701,19 +693,6 @@
   font-size: 11px;
   margin-top: 8px;
 }
-.board-excerpts {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: hsl(var(--muted-foreground));
-  margin-top: 5px;
-  white-space: nowrap;
-}
-.board-excerpts-label {
-  font-size: 10px;
-}
-
 @media (max-width: 900px) {
   .board-panel-toolbar {
     flex-wrap: wrap;
@@ -734,9 +713,6 @@
   }
   .board-row h2 {
     font-size: 14px;
-  }
-  .board-excerpts-label {
-    display: none;
   }
   .board-pin {
     padding: 14px;

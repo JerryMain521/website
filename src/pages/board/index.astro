@@ -22,9 +22,7 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
       <div class='board-panel-toolbar'>
         <div class='board-tabs' aria-label='Record views'>
           <button type='button' data-view='all' aria-pressed='true'
-            ><span class='board-open-icon' aria-hidden='true'></span>All records <span
-              class='board-counter'>{forumTopics.length}</span
-            ></button
+            >All records <span class='board-counter'>{forumTopics.length}</span></button
           >
           <button type='button' data-view='documented' aria-pressed='false'
             >Documented <span class='board-counter'>{documentedCount}</span></button
@@ -42,8 +40,17 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
               data-number={topic.number}
               data-documented={String(topic.documented)}
             >
-              <a class='board-row' href={`/board/${topic.id}`}>
-                <span class='board-open-icon' aria-hidden='true' />
+              <a
+                class='board-row'
+                data-state={topic.documented ? 'resolved' : 'open'}
+                href={`/board/${topic.id}`}
+              >
+                <span
+                  class='board-state-marker'
+                  aria-label={topic.documented ? 'Resolved' : 'Open'}
+                >
+                  {topic.documented ? 'DONE' : 'OPEN'}
+                </span>
                 <div class='board-row-content'>
                   <div class='board-row-title'>
                     <>
@@ -58,27 +65,11 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
                     <>
                       <span>#{topic.number}</span>
                       <span>
-                        Group notes · <time datetime={topic.date}>{boardDate(topic.date)}</time>
+                        <time datetime={topic.date}>{boardDate(topic.date)}</time>
                       </span>
                     </>
                   </div>
                 </div>
-                <span
-                  class='board-excerpts'
-                  aria-label={`${topic.excerptCount} discussion excerpts`}
-                  title='Discussion excerpts, not website comments'
-                >
-                  <svg width='16' height='16' viewBox='0 0 16 16' fill='none' aria-hidden='true'>
-                    <path
-                      d='M3 2.5h10a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5H8L4.5 14v-3.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5Z'
-                      stroke='currentColor'
-                      stroke-width='1.4'
-                      stroke-linejoin='round'
-                    />
-                  </svg>
-                  {topic.excerptCount}
-                  <span class='board-excerpts-label'>excerpts</span>
-                </span>
               </a>
             </li>
           ))

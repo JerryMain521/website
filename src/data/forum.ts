@@ -7,10 +7,9 @@ export async function getForumTopics() {
     .map((entry) => ({
       ...entry.data,
       id: entry.id,
-      entry,
-      excerptCount: (entry.body?.match(/^### /gm) ?? []).length
+      entry
     }))
-    .sort((a, b) => a.date.localeCompare(b.date) || Number(a.number) - Number(b.number))
+    .sort((a, b) => b.date.localeCompare(a.date) || Number(b.number) - Number(a.number))
 }
 
 // UI labels stay separate from the original Chinese discussion content.
