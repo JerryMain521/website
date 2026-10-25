@@ -1,0 +1,281 @@
+---
+interface Props {
+  src: string
+  title: string
+}
+
+const { src, title } = Astro.props
+const pdfUrl = encodeURI(src)
+const filename = src.split('/').pop() || 'score.pdf'
+---
+
+<section class='score-pdf not-prose' aria-label={`${title} PDF 乐谱`}>
+  <div class='score-toolbar'>
+    <span class='score-label'>PDF 乐谱</span>
+    <div class='score-actions'>
+      <a class='score-open' href={pdfUrl} target='_blank' rel='noopener noreferrer'>
+        新窗口打开 <span class='sr-only'>PDF</span><span aria-hidden='true'>↗</span>
+      </a>
+      <a class='score-download' href={pdfUrl} download={filename}>下载 PDF</a>
+    </div>
+  </div>
+  <p class='score-help'>如预览无法显示，可在新窗口打开或下载后阅读。</p>
+  <score-pdf-reader data-src={pdfUrl} data-title={title}>
+    <div class='score-controls' role='group' aria-label='PDF 阅读控制'>
+      <button type='button' data-previous disabled aria-label='上一页'>←</button>
+      <output data-page aria-live='polite'>正在加载</output>
+      <button type='button' data-next disabled aria-label='下一页'>→</button>
+      <label>
+        <span class='sr-only'>乐谱缩放</span>
+        <select data-zoom aria-label='乐谱缩放' disabled>
+          <option value='1'>适合宽度</option>
+          <option value='1.5'>放大 150%</option>
+          <option value='2'>放大 200%</option>
+        </select>
+      </label>
+    </div>
+    <p class='score-status' role='status'>正在加载乐谱…</p>
+    <div class='score-viewer'>
+      <canvas role='img' aria-label={`${title} — PDF 乐谱预览`} hidden></canvas>
+    </div>
+  </score-pdf-reader>
+  <noscript
+    ><p class='score-help'>请启用 JavaScript 以在线预览，或使用上方链接阅读原始 PDF。</p></noscript
+  >
+</section>
+
+<script>
+  import type { PDFDocumentLoadingTask, PDFDocumentProxy, RenderTask } from 'pdfjs-dist'
+  import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+
+  class ScorePdfReader extends HTMLElement {
+    private pdf?: PDFDocumentProxy
+    private loadingTask?: PDFDocumentLoadingTask
+    private renderTask?: RenderTask
+    private resizeObserver?: ResizeObserver
+    private pageNumber = 1
+    private zoom = 1
+    private revision = 0
+    private canvas = this.querySelector('canvas')!
+    private viewer = this.querySelector<HTMLElement>('.score-viewer')!
+    private status = this.querySelector<HTMLElement>('.score-status')!
+    private pageLabel = this.querySelector('output')!
+    private previous = this.querySelector<HTMLButtonElement>('[data-previous]')!
+    private next = this.querySelector<HTMLButtonElement>('[data-next]')!
+    private zoomSelect = this.querySelector<HTMLSelectElement>('[data-zoom]')!
+
+    async connectedCallback() {
+      this.previous.onclick = () => this.changePage(-1)
+      this.next.onclick = () => this.changePage(1)
+      this.zoomSelect.onchange = () => {
+        this.zoom = Number(this.zoomSelect.value)
+        void this.renderPage()
+      }
+
+      try {
+        const { getDocument, GlobalWorkerOptions } = await import('pdfjs-dist')
+        if (!this.isConnected) return
+        GlobalWorkerOptions.workerSrc = workerUrl
+        this.loadingTask = getDocument({ url: this.dataset.src! })
+        this.pdf = await this.loadingTask.promise
+        if (!this.isConnected) return
+        this.zoomSelect.disabled = false
+        let lastWidth = 0
+        this.resizeObserver = new ResizeObserver(([entry]) => {
+          const width = Math.round(entry.contentRect.width)
+          if (width > 0 && width !== lastWidth) {
+            lastWidth = width
+            void this.renderPage()
+          }
+        })
+        this.resizeObserver.observe(this.viewer)
+      } catch {
+        this.showError()
+      }
+    }
+
+    disconnectedCallback() {
+      this.revision++
+      this.resizeObserver?.disconnect()
+      this.renderTask?.cancel()
+      void this.loadingTask?.destroy()
+    }
+
+    private changePage(delta: number) {
+      if (!this.pdf) return
+      this.pageNumber = Math.max(1, Math.min(this.pdf.numPages, this.pageNumber + delta))
+      this.viewer.scrollTop = 0
+      void this.renderPage()
+    }
+
+    private async renderPage() {
+      if (!this.pdf) return
+      const revision = ++this.revision
+      const previousTask = this.renderTask
+      previousTask?.cancel()
+      this.previous.disabled = this.pageNumber <= 1
+      this.next.disabled = this.pageNumber >= this.pdf.numPages
+      this.pageLabel.value = `第 ${this.pageNumber} / ${this.pdf.numPages} 页`
+
+      try {
+        await previousTask?.promise.catch(() => {})
+        const page = await this.pdf.getPage(this.pageNumber)
+        if (revision !== this.revision || !this.isConnected) return
+        const natural = page.getViewport({ scale: 1 })
+        const width = Math.max(1, this.viewer.clientWidth - 24)
+        const viewport = page.getViewport({ scale: (width / natural.width) * this.zoom })
+        const density = Math.min(window.devicePixelRatio || 1, 2)
+        this.canvas.width = Math.ceil(viewport.width * density)
+        this.canvas.height = Math.ceil(viewport.height * density)
+        this.canvas.style.width = `${viewport.width}px`
+        this.canvas.style.height = `${viewport.height}px`
+        this.canvas.setAttribute('aria-label', `${this.dataset.title} — 第 ${this.pageNumber} 页`)
+        this.canvas.hidden = false
+        this.renderTask = page.render({
+          canvas: this.canvas,
+          viewport,
+          transform: [density, 0, 0, density, 0, 0]
+        })
+        await this.renderTask.promise
+        if (revision === this.revision) this.status.hidden = true
+      } catch (error) {
+        if (revision === this.revision && (error as Error).name !== 'RenderingCancelledException') {
+          this.showError()
+        }
+      }
+    }
+
+    private showError() {
+      if (!this.isConnected) return
+      this.status.hidden = false
+      this.status.textContent = '乐谱预览暂时无法加载，请在新窗口打开或下载 PDF。'
+      this.pageLabel.value = '预览不可用'
+      this.previous.disabled = this.next.disabled = this.zoomSelect.disabled = true
+      this.canvas.hidden = true
+    }
+  }
+
+  if (!customElements.get('score-pdf-reader')) {
+    customElements.define('score-pdf-reader', ScorePdfReader)
+  }
+</script>
+
+<style>
+  .score-pdf {
+    margin-block: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--weather-edge, hsl(var(--border)));
+    border-radius: 1rem;
+    background: var(--weather-surface, hsl(var(--background)));
+  }
+  .score-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0;
+  }
+  .score-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .score-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .score-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    min-height: 2.75rem;
+    border-radius: 0.625rem;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  .score-open {
+    color: hsl(var(--muted-foreground));
+  }
+  .score-open:hover {
+    color: hsl(var(--primary));
+  }
+  .score-download {
+    padding-inline: 1rem;
+    background: hsl(var(--primary));
+    color: hsl(var(--background));
+  }
+  .score-download:hover {
+    opacity: 0.85;
+  }
+  .score-actions a:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 3px;
+  }
+  .score-help {
+    margin: 0;
+    padding: 0.625rem 1rem 1rem;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+  .score-viewer {
+    overflow: auto;
+    max-height: 80vh;
+    max-height: 80svh;
+    padding: 12px;
+    background: #dce0e5;
+  }
+  score-pdf-reader {
+    display: block;
+  }
+  .score-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--weather-edge, hsl(var(--border)));
+    font-size: 0.875rem;
+  }
+  .score-controls button,
+  .score-controls select {
+    min-height: 2.75rem;
+    border: 1px solid var(--weather-edge, hsl(var(--border)));
+    border-radius: 0.5rem;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    padding: 0.375rem 0.75rem;
+    font: inherit;
+  }
+  .score-controls button:disabled {
+    opacity: 0.35;
+  }
+  .score-controls button:focus-visible,
+  .score-controls select:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+  .score-controls output {
+    min-width: 6rem;
+    text-align: center;
+  }
+  .score-status {
+    padding: 1rem;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+  canvas {
+    display: block;
+    max-width: none;
+    margin-inline: auto;
+    background: white;
+    box-shadow: 0 2px 8px #0002;
+  }
+  [hidden] {
+    display: none;
+  }
+</style>

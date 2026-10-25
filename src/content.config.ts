@@ -34,6 +34,12 @@ const blog = defineCollection({
         .optional(),
       tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
       language: z.string().optional(),
+      // PDFs are served from public/, e.g. public/scores/example.pdf.
+      pdf: z
+        .string()
+        .trim()
+        .regex(/^\/(?!\/)[^?#]+\.pdf$/i, 'Use a site-relative PDF path, e.g. /scores/example.pdf')
+        .optional(),
       draft: z.boolean().default(false),
       // Special fields
       comment: z.boolean().default(true)

@@ -10,6 +10,7 @@ import config from 'virtual:config'
 import { MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
 import PageLayout from '@/layouts/ContentLayout.astro'
+import ScorePdf from '@/components/blog/ScorePdf.astro'
 import { Comment } from '@/components/waline'
 
 interface Props {
@@ -31,6 +32,7 @@ const {
   heroImage,
   publishDate,
   title,
+  pdf,
   updatedDate,
   draft: isDraft,
   comment: enableComment
@@ -57,6 +59,7 @@ const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-tex
   <Hero {data} {remarkPluginFrontmatter} slot='header' />
 
   <slot />
+  {pdf && <ScorePdf src={pdf} {title} />}
 
   <Fragment slot='bottom'>
     {/* Copyright */}
