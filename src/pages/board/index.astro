@@ -47,9 +47,9 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
               >
                 <span
                   class='board-state-marker'
-                  aria-label={topic.documented ? 'Resolved' : 'Open'}
+                  aria-label={`Record ${topic.number}, ${topic.documented ? 'Resolved' : 'Open'}`}
                 >
-                  {topic.documented ? 'DONE' : 'OPEN'}
+                  {topic.number}
                 </span>
                 <div class='board-row-content'>
                   <div class='board-row-title'>
@@ -62,12 +62,7 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
                     </>
                   </div>
                   <div class='board-row-meta'>
-                    <>
-                      <span>#{topic.number}</span>
-                      <span>
-                        <time datetime={topic.date}>{boardDate(topic.date)}</time>
-                      </span>
-                    </>
+                    <time datetime={topic.date}>{boardDate(topic.date)}</time>
                   </div>
                 </div>
               </a>

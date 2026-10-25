@@ -622,54 +622,56 @@
   border-top: 1px solid hsl(var(--border));
 }
 .board-row {
-  --board-state-color: #976b29;
+  --board-number-color: #976b29;
   display: flex;
-  align-items: start;
+  align-items: center;
   gap: 12px;
   padding: 20px 20px;
   color: inherit;
 }
 .board-row[data-state='resolved'] {
-  --board-state-color: #257e74;
+  --board-number-color: #257e74;
 }
 .dark .board-row {
-  --board-state-color: #c4a578;
+  --board-number-color: #d2ae76;
 }
 .dark .board-row[data-state='resolved'] {
-  --board-state-color: #79b5aa;
+  --board-number-color: #83c4b2;
 }
 .board-state-marker {
   display: grid;
   place-items: center;
   flex: 0 0 44px;
-  height: 22px;
-  margin-top: 1px;
-  border: 1px solid color-mix(in srgb, var(--board-state-color) 45%, transparent);
-  border-radius: 4px;
-  color: var(--board-state-color);
-  font-size: 9px;
-  font-weight: 600;
+  height: 32px;
+  text-align: center;
+  color: var(--board-number-color);
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
 }
-.board-row[data-state='resolved'] .board-state-marker {
-  background: color-mix(in srgb, var(--board-state-color) 14%, transparent);
-}
-.board-row:hover {
+.board-row:hover,
+.board-row:focus-visible {
   background: hsl(var(--primary) / 0.045);
 }
 .board-row:hover h2 {
   color: hsl(var(--primary));
 }
 .board-row-content {
+  display: flex;
+  align-items: center;
   flex: 1;
+  gap: 20px;
   min-width: 0;
 }
 .board-row-title {
   display: flex;
   align-items: center;
+  flex: 1;
   flex-wrap: wrap;
   gap: 8px;
+  min-width: 0;
 }
 .board-row h2 {
   font-size: 15px;
@@ -687,11 +689,11 @@
 }
 .board-row-meta {
   display: flex;
-  flex-wrap: wrap;
+  flex-shrink: 0;
   gap: 8px;
   color: hsl(var(--muted-foreground));
-  font-size: 11px;
-  margin-top: 8px;
+  font-size: 13px;
+  white-space: nowrap;
 }
 @media (max-width: 900px) {
   .board-panel-toolbar {
