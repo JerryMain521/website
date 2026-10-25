@@ -1,4 +1,13 @@
+import { loadEnv } from 'vite'
+
 import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } from 'astro-pure/types'
+
+const walineServer =
+  loadEnv(
+    process.env.NODE_ENV || 'development',
+    process.cwd(),
+    'PUBLIC_WALINE_SERVER_URL'
+  ).PUBLIC_WALINE_SERVER_URL?.trim() || ''
 
 export const theme: ThemeUserConfig = {
   // [Basic]
@@ -60,7 +69,7 @@ export const theme: ThemeUserConfig = {
     // Year format
     year: `© ${new Date().getFullYear()}`,
     // year: `© 2019 - ${new Date().getFullYear()}`,
-    links: [ 
+    links: [
       // Registration link
       //{
       //  title: 'Moe ICP 114514',
@@ -153,19 +162,24 @@ export const integ: IntegrationUserConfig = {
   },
   // Comment system
   waline: {
-    enable: false,
+    enable: Boolean(walineServer),
     // Server service link
-    server: 'https://astro-theme-pure-waline.arthals.ink/',
+    server: walineServer,
     // Show meta info for comments
     showMeta: false,
     // Refer https://waline.js.org/en/guide/features/emoji.html
     emoji: ['bmoji', 'weibo'],
     // Refer https://waline.js.org/en/reference/client/props.html
     additionalConfigs: {
-      // search: false,
+      lang: 'en-US',
+      dark: 'html.dark',
+      login: 'enable',
+      meta: ['nick', 'mail'],
+      requiredMeta: ['nick'],
+      search: false,
       locale: {
         reaction0: 'Like',
-        placeholder: 'Welcome to comment. (Email to receive replies. Login is unnecessary)'
+        placeholder: 'Join the discussion. No account required.'
       },
       imageUploader: false
     }

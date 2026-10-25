@@ -5,9 +5,9 @@ summary: 群友（1）和群友（2）都回答“算”。
 category: 训练方法
 status: 待补充
 date: '2026-10-20'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-25'
 documented: false
-draft: false
+draft: true
 related:
   - fitness-test-preparation
   - sleepiness-after-running

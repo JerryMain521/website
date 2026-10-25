@@ -21,7 +21,7 @@ category: '动作技术'
 status: '待补充'
 date: '2026-10-22'
 updatedDate: '2026-10-22'
-documented: false
+stage: 'collected'
 draft: false
 related: ['warm-up']
 ---
@@ -60,13 +60,22 @@ related: ['warm-up']
 - `updatedDate`：本条记录最后一次内容更新日期；不填时使用 `date`。
 - `category`：现有分类为 `恢复与放松`、`训练方法`、`动作技术`。
 - `status`：现有状态为 `待补充`、`待反馈`、`有分歧`。
-- `documented`：是否已经形成完整文档，决定 Documented 筛选和数量；`true` 的记录在标题左侧显示青绿色 DONE 状态牌，`false` 显示琥珀色 OPEN 状态牌。
+- `stage`：处理阶段，`collected` 为刚汇总（灰色），`organizing` 为整理中（黄色），`completed` 为已完成（绿色）。列表编号颜色和阶段筛选按此字段显示，深色模式使用对应浅色。上位机在「处理阶段」下拉框中设置。
+- `documented`：旧版兼容字段。未填写 `stage` 时，`true` 对应已完成，`false` 或未填写对应刚汇总；填写 `stage` 后以阶段为准。上位机保存时同步写入兼容值，只有已完成为 `true`。
 - `draft`：设为 `true` 时，不生成公开列表和详情页。
 - `related`：相关记录的文件名，不带 `.md`；没有时写 `[]`。
 
 详情页复用 Blog 的文章布局与正文排版。目录从正文标题自动生成，支持二级标题 `##` 及下级标题的层级显示；桌面端固定在右侧，手机端通过目录按钮打开。简介、首次讨论日期与更新时间显示在文章头部，关联记录显示在正文下方。列表不显示评论图标或 excerpts 数量；正文的讨论记录继续保留。
 
 分类和状态的英文显示名仍在 `src/data/forum.ts` 的 `boardLabels` 中配置。新增分类时可以补充映射；没有映射的值会原样显示。
+
+## 帖子评论
+
+每篇公开 Board 帖子的底部都会加载 Waline 评论区，评论按 `/board/文件名` 分开保存；文章标题和查询参数变化不会混用评论。访客填写昵称即可发表评论，不要求注册或登录。评论区不会在列表中显示计数。
+
+在网站构建环境中设置 `PUBLIC_WALINE_SERVER_URL` 为自己的评论服务地址，并重新构建。没有配置时评论区保持关闭，不会连接主题的演示服务器。本地开发可参照 `.env.example` 创建 `.env`；本地服务地址不要用于线上构建。
+
+Cloudflare 评论服务的部署与本地验证说明见 [comments-cloudflare.md](./comments-cloudflare.md)。原有 Blog 文章也沿用同一评论服务，并继续遵循各篇文章的 `comment` 开关。
 
 示例文件保留原有讨论内容及来源说明。编辑后请同步调整 `updatedDate`，避免把未经查证的讨论直接写成已验证结论。
 

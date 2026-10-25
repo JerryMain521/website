@@ -1,0 +1,65 @@
+---
+import IndexPage from '@/layouts/IndexPage.astro'
+
+export const prerender = true
+---
+
+<IndexPage
+  title='考研复习'
+  subtitle='Postgraduate'
+  description='一个新的篇章，从这里开始。'
+  meta={{ title: '考研复习', description: 'JerryMain 的考研复习空间。' }}
+>
+  <section
+    class='study-placeholder weather-card animate'
+    lang='zh-CN'
+    aria-labelledby='study-title'
+  >
+    <span class='chapter-label' aria-hidden='true'>A NEW CHAPTER</span>
+    <h2 id='study-title'>留一页，给接下来的努力。</h2>
+    <p>这里将用于考研复习，内容正在酝酿中。</p>
+    <span class='chapter-status'>待续</span>
+  </section>
+</IndexPage>
+
+<style>
+  .study-placeholder {
+    display: flex;
+    min-height: 20rem;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    border: 1px solid hsl(var(--border));
+    padding: clamp(1.5rem, 6vw, 4rem);
+  }
+
+  .chapter-label {
+    color: hsl(var(--primary));
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+  }
+
+  h2 {
+    margin-top: 1.25rem;
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+    font-weight: 500;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+
+  p {
+    margin-top: 0.75rem;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .chapter-status {
+    margin-top: 2.5rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.75rem;
+  }
+</style>

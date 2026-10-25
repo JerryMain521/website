@@ -56,6 +56,11 @@ const docs = defineCollection({
     })
 })
 
+const boardDateSchema = z.preprocess(
+  (value) => (value instanceof Date ? value.toISOString().slice(0, 10) : value),
+  z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+)
+
 const board = defineCollection({
   loader: glob({ base: './src/content/board', pattern: '**/*.md' }),
   schema: z.object({
@@ -64,14 +69,15 @@ const board = defineCollection({
     summary: z.string(),
     category: z.string(),
     status: z.string(),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    updatedDate: z
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .optional(),
+    date: boardDateSchema,
+    updatedDate: boardDateSchema.optional(),
+    stage: z.enum(['collected', 'organizing', 'completed']).optional(),
     documented: z.boolean().default(false),
     draft: z.boolean().default(false),
     related: z.array(z.string()).default([])
+  }).transform((data) => {
+    const stage = data.stage ?? (data.documented ? 'completed' : 'collected')
+    return { ...data, stage, documented: stage === 'completed' }
   })
 })
 

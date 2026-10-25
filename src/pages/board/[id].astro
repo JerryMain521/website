@@ -7,6 +7,7 @@ import { MediumZoom } from 'astro-pure/advanced'
 import { TOC } from 'astro-pure/components/pages'
 import { Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/ContentLayout.astro'
+import { Comment } from '@/components/waline'
 import { integ } from '@/site-config'
 
 import { boardDate, boardLabel, getForumTopics } from '../../data/forum'
@@ -108,6 +109,16 @@ const related = forumTopics.filter((item) => topic.related.includes(item.id))
             ))}
           </ul>
         </nav>
+      )
+    }
+    {
+      integ.waline.enable && (
+        <section class='mt-8 border-t pt-6 sm:mt-10' aria-labelledby='board-comments-title'>
+          <h2 id='board-comments-title' class='mb-4 text-lg font-medium text-foreground'>
+            Comments
+          </h2>
+          <Comment />
+        </section>
       )
     }
   </Fragment>

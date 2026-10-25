@@ -1,13 +1,13 @@
 ---
 import IndexPage from '@/layouts/IndexPage.astro'
 
-import { boardDate, boardLabel, getForumTopics } from '../../data/forum'
+import { boardDate, boardLabel, boardStageLabels, getForumTopics } from '../../data/forum'
 
 import '@/assets/styles/forum.css'
 
 export const prerender = true
 const forumTopics = await getForumTopics()
-const documentedCount = forumTopics.filter((topic) => topic.documented).length
+const stages = ['collected', 'organizing', 'completed'] as const
 ---
 
 <IndexPage
@@ -24,9 +24,13 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
           <button type='button' data-view='all' aria-pressed='true'
             >All records <span class='board-counter'>{forumTopics.length}</span></button
           >
-          <button type='button' data-view='documented' aria-pressed='false'
-            >Documented <span class='board-counter'>{documentedCount}</span></button
-          >
+          {stages.map((stage) => (
+            <button type='button' data-view={stage} aria-pressed='false'>
+              <span class='board-stage-dot' data-stage={stage} aria-hidden='true'></span>
+              {boardStageLabels[stage]}
+              <span class='board-counter'>{forumTopics.filter((topic) => topic.stage === stage).length}</span>
+            </button>
+          ))}
         </div>
       </div>
       <ul id='forum-list' class='board-list'>
@@ -38,16 +42,17 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
               data-status={boardLabel(topic.status)}
               data-date={topic.date}
               data-number={topic.number}
-              data-documented={String(topic.documented)}
+              data-stage={topic.stage}
             >
               <a
                 class='board-row'
-                data-state={topic.documented ? 'resolved' : 'open'}
+                data-stage={topic.stage}
                 href={`/board/${topic.id}`}
               >
                 <span
                   class='board-state-marker'
-                  aria-label={`Record ${topic.number}, ${topic.documented ? 'Resolved' : 'Open'}`}
+                  aria-label={`Record ${topic.number}, ${boardStageLabels[topic.stage]}`}
+                  title={boardStageLabels[topic.stage]}
                 >
                   {topic.number}
                 </span>
@@ -91,7 +96,7 @@ const documentedCount = forumTopics.filter((topic) => topic.documented).length
   function update() {
     let count = 0
     rows.forEach((row) => {
-      row.hidden = !(view === 'all' || row.dataset.documented === 'true')
+      row.hidden = !(view === 'all' || row.dataset.stage === view)
       if (!row.hidden) count++
       list.append(row)
     })

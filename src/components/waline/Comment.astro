@@ -5,14 +5,23 @@ import '@waline/client/style'
 
 import { cn } from 'astro-pure/utils'
 
-const { class: className } = Astro.props
+interface Props {
+  class?: string
+  path?: string
+}
+
+const { class: className, path = Astro.url.pathname } = Astro.props
 ---
 
 {
   config.integ.waline.enable && (
-    <comment-component>
-      <div id='waline' class={cn('not-prose', className)}>
-        Comment seems to stuck. Try to refresh?✨
+    <comment-component data-path={path.replace(/\/+$/, '') || '/'}>
+      <div
+        id='waline'
+        class={cn('not-prose', className)}
+        data-show-meta={String(config.integ.waline.showMeta)}
+      >
+        Loading comments…
       </div>
     </comment-component>
   )
@@ -26,12 +35,10 @@ const { class: className } = Astro.props
   const walineConfig = config.integ.waline
 
   class Comment extends HTMLElement {
-    constructor() {
-      super()
-    }
+    private instance: ReturnType<typeof walineInit> = null
 
     connectedCallback() {
-      // Prevent Vue log errors
+      if (this.instance) return // Prevent Vue log errors
       ;(globalThis as unknown as { __VUE_OPTIONS_API__: boolean }).__VUE_OPTIONS_API__ = true
       ;(globalThis as unknown as { __VUE_PROD_DEVTOOLS__: boolean }).__VUE_PROD_DEVTOOLS__ = false
       ;(
@@ -42,26 +49,30 @@ const { class: className } = Astro.props
         (preset) => `${config.npmCDN}/@waline/emojis@1.2.0/${preset}` as WalineEmojiPresets
       )
 
-      walineInit({
-        el: 'comment-component #waline',
+      this.instance = walineInit({
         serverURL: walineConfig.server || '',
         emoji,
         reaction: ['/icons/heart-item.svg'],
-        ...walineConfig.additionalConfigs
+        ...walineConfig.additionalConfigs,
+        el: this.querySelector<HTMLElement>('#waline')!,
+        path: this.dataset.path
       })
+    }
+
+    disconnectedCallback() {
+      this.instance?.destroy()
+      this.instance = null
     }
   }
 
-  if (walineConfig.enable) customElements.define('comment-component', Comment)
+  if (walineConfig.enable && !customElements.get('comment-component'))
+    customElements.define('comment-component', Comment)
 </script>
 
-{
-  config.integ.waline.showMeta &&(
-    <style> #waline :global(.wl-meta) { display: none; } </style>
-  )
-}
-
 <style>
+  #waline[data-show-meta='false'] :global(.wl-meta) {
+    display: none;
+  }
   /* Basic theme */
   #waline {
     /* Font size */

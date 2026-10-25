@@ -36,6 +36,11 @@ const boardLabels: Record<string, string> = {
   仍待核查: 'Needs verification'
 }
 export const boardLabel = (value: string) => boardLabels[value] ?? value
+export const boardStageLabels = {
+  collected: 'Collected',
+  organizing: 'In progress',
+  completed: 'Completed'
+} as const
 export const boardDate = (date: string) =>
   new Intl.DateTimeFormat('en-US', {
     month: 'short',

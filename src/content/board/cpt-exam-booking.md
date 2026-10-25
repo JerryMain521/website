@@ -5,12 +5,12 @@ summary: 群友（13）建议通过官网及报名邮件走预约流程，认可
 category: 学习与考试
 status: 待补充
 date: '2026-10-20'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-25'
 documented: false
-draft: false
+draft: true
 related:
-  - cpt-learning-path
   - cpt-exam-readiness
+  - cpt-learning-path
 ---
 
 ## Current summary
