@@ -104,7 +104,6 @@ const filename = src.split('/').pop() || 'score.pdf'
     private changePage(delta: number) {
       if (!this.pdf) return
       this.pageNumber = Math.max(1, Math.min(this.pdf.numPages, this.pageNumber + delta))
-      this.viewer.scrollTop = 0
       void this.renderPage()
     }
 
@@ -222,9 +221,8 @@ const filename = src.split('/').pop() || 'score.pdf'
     line-height: 1.7;
   }
   .score-viewer {
-    overflow: auto;
-    max-height: 80vh;
-    max-height: 80svh;
+    /* Let the PDF page's own aspect ratio determine the full reader height. */
+    overflow-x: auto;
     padding: 12px;
     background: #dce0e5;
   }
