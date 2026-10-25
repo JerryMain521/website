@@ -10,21 +10,20 @@ const filename = src.split('/').pop() || 'score.pdf'
 ---
 
 <section class='score-pdf not-prose' aria-label={`${title} PDF 乐谱`}>
-  <div class='score-toolbar'>
-    <span class='score-label'>PDF 乐谱</span>
-    <div class='score-actions'>
-      <a class='score-open' href={pdfUrl} target='_blank' rel='noopener noreferrer'>
-        新窗口打开 <span class='sr-only'>PDF</span><span aria-hidden='true'>↗</span>
-      </a>
-      <a class='score-download' href={pdfUrl} download={filename}>下载 PDF</a>
-    </div>
-  </div>
-  <p class='score-help'>如预览无法显示，可在新窗口打开或下载后阅读。</p>
   <score-pdf-reader data-src={pdfUrl} data-title={title}>
-    <div class='score-controls' role='group' aria-label='PDF 阅读控制'>
-      <button type='button' data-previous disabled aria-label='上一页'>←</button>
-      <output data-page aria-live='polite'>正在加载</output>
-      <button type='button' data-next disabled aria-label='下一页'>→</button>
+    <div class='score-toolbar'>
+      <span class='score-label'>PDF 乐谱</span>
+      <div class='score-controls' role='group' aria-label='PDF 阅读控制'>
+        <button type='button' data-previous disabled aria-label='上一页'>←</button>
+        <output data-page aria-live='polite'>正在加载</output>
+        <button type='button' data-next disabled aria-label='下一页'>→</button>
+      </div>
+      <div class='score-actions'>
+        <a class='score-open' href={pdfUrl} target='_blank' rel='noopener noreferrer'>
+          新窗口打开 <span class='sr-only'>PDF</span><span aria-hidden='true'>↗</span>
+        </a>
+        <a class='score-download' href={pdfUrl} download={filename}>下载 PDF</a>
+      </div>
     </div>
     <p class='score-status' role='status'>正在加载乐谱…</p>
     <div class='score-viewer'>
@@ -158,7 +157,7 @@ const filename = src.split('/').pop() || 'score.pdf'
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 1rem 1rem 0;
+    padding: 1rem;
   }
   .score-label {
     font-size: 0.875rem;
@@ -216,12 +215,9 @@ const filename = src.split('/').pop() || 'score.pdf'
   }
   .score-controls {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-top: 1px solid var(--weather-edge, hsl(var(--border)));
     font-size: 0.875rem;
   }
   .score-controls button {
