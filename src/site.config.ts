@@ -1,13 +1,7 @@
-import { loadEnv } from 'vite'
-
 import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } from 'astro-pure/types'
 
-const walineServer =
-  loadEnv(
-    process.env.NODE_ENV || 'development',
-    process.cwd(),
-    'PUBLIC_WALINE_SERVER_URL'
-  ).PUBLIC_WALINE_SERVER_URL?.trim() || ''
+// This module is also bundled into pages; build tools belong in astro.config.ts.
+const walineServer = import.meta.env?.PUBLIC_WALINE_SERVER_URL?.trim() || ''
 
 export const theme: ThemeUserConfig = {
   // [Basic]

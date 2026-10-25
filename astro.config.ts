@@ -4,6 +4,7 @@ import AstroPureIntegration from 'astro-pure'
 import { defineConfig, fontProviders } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import { loadEnv } from 'vite'
 
 // Local integrations
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
@@ -21,6 +22,17 @@ import {
   transformerRemoveNotationEscape
 } from './src/plugins/shiki-official/transformers.ts'
 import config from './src/site.config.ts'
+
+// Read .env files only while loading the build config. Keep the integration's
+// serialized client config aligned with the PUBLIC_ value used by page modules.
+const walineServer =
+  loadEnv(
+    process.env.NODE_ENV || 'development',
+    process.cwd(),
+    'PUBLIC_WALINE_SERVER_URL'
+  ).PUBLIC_WALINE_SERVER_URL?.trim() || ''
+config.integ.waline.enable = Boolean(walineServer)
+config.integ.waline.server = walineServer
 
 // https://astro.build/config
 export default defineConfig({
