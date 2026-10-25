@@ -25,14 +25,6 @@ const filename = src.split('/').pop() || 'score.pdf'
       <button type='button' data-previous disabled aria-label='上一页'>←</button>
       <output data-page aria-live='polite'>正在加载</output>
       <button type='button' data-next disabled aria-label='下一页'>→</button>
-      <label>
-        <span class='sr-only'>乐谱缩放</span>
-        <select data-zoom aria-label='乐谱缩放' disabled>
-          <option value='1'>适合宽度</option>
-          <option value='1.5'>放大 150%</option>
-          <option value='2'>放大 200%</option>
-        </select>
-      </label>
     </div>
     <p class='score-status' role='status'>正在加载乐谱…</p>
     <div class='score-viewer'>
@@ -54,7 +46,6 @@ const filename = src.split('/').pop() || 'score.pdf'
     private renderTask?: RenderTask
     private resizeObserver?: ResizeObserver
     private pageNumber = 1
-    private zoom = 1
     private revision = 0
     private canvas = this.querySelector('canvas')!
     private viewer = this.querySelector<HTMLElement>('.score-viewer')!
@@ -62,15 +53,10 @@ const filename = src.split('/').pop() || 'score.pdf'
     private pageLabel = this.querySelector('output')!
     private previous = this.querySelector<HTMLButtonElement>('[data-previous]')!
     private next = this.querySelector<HTMLButtonElement>('[data-next]')!
-    private zoomSelect = this.querySelector<HTMLSelectElement>('[data-zoom]')!
 
     async connectedCallback() {
       this.previous.onclick = () => this.changePage(-1)
       this.next.onclick = () => this.changePage(1)
-      this.zoomSelect.onchange = () => {
-        this.zoom = Number(this.zoomSelect.value)
-        void this.renderPage()
-      }
 
       try {
         const { getDocument, GlobalWorkerOptions } = await import('pdfjs-dist')
@@ -79,7 +65,6 @@ const filename = src.split('/').pop() || 'score.pdf'
         this.loadingTask = getDocument({ url: this.dataset.src! })
         this.pdf = await this.loadingTask.promise
         if (!this.isConnected) return
-        this.zoomSelect.disabled = false
         let lastWidth = 0
         this.resizeObserver = new ResizeObserver(([entry]) => {
           const width = Math.round(entry.contentRect.width)
@@ -122,7 +107,7 @@ const filename = src.split('/').pop() || 'score.pdf'
         if (revision !== this.revision || !this.isConnected) return
         const natural = page.getViewport({ scale: 1 })
         const width = Math.max(1, this.viewer.clientWidth - 24)
-        const viewport = page.getViewport({ scale: (width / natural.width) * this.zoom })
+        const viewport = page.getViewport({ scale: width / natural.width })
         const density = Math.min(window.devicePixelRatio || 1, 2)
         this.canvas.width = Math.ceil(viewport.width * density)
         this.canvas.height = Math.ceil(viewport.height * density)
@@ -149,7 +134,7 @@ const filename = src.split('/').pop() || 'score.pdf'
       this.status.hidden = false
       this.status.textContent = '乐谱预览暂时无法加载，请在新窗口打开或下载 PDF。'
       this.pageLabel.value = '预览不可用'
-      this.previous.disabled = this.next.disabled = this.zoomSelect.disabled = true
+      this.previous.disabled = this.next.disabled = true
       this.canvas.hidden = true
     }
   }
@@ -239,8 +224,7 @@ const filename = src.split('/').pop() || 'score.pdf'
     border-top: 1px solid var(--weather-edge, hsl(var(--border)));
     font-size: 0.875rem;
   }
-  .score-controls button,
-  .score-controls select {
+  .score-controls button {
     min-height: 2.75rem;
     border: 1px solid var(--weather-edge, hsl(var(--border)));
     border-radius: 0.5rem;
@@ -252,8 +236,7 @@ const filename = src.split('/').pop() || 'score.pdf'
   .score-controls button:disabled {
     opacity: 0.35;
   }
-  .score-controls button:focus-visible,
-  .score-controls select:focus-visible {
+  .score-controls button:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
   }
