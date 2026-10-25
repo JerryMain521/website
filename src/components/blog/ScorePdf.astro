@@ -12,17 +12,49 @@ const filename = src.split('/').pop() || 'score.pdf'
 <section class='score-pdf not-prose' aria-label={`${title} PDF 乐谱`}>
   <score-pdf-reader data-src={pdfUrl} data-title={title}>
     <div class='score-toolbar'>
-      <span class='score-label'>PDF 乐谱</span>
       <div class='score-controls' role='group' aria-label='PDF 阅读控制'>
         <button type='button' data-previous disabled aria-label='上一页'>←</button>
         <output data-page aria-live='polite'>正在加载</output>
         <button type='button' data-next disabled aria-label='下一页'>→</button>
       </div>
       <div class='score-actions'>
-        <a class='score-open' href={pdfUrl} target='_blank' rel='noopener noreferrer'>
-          新窗口打开 <span class='sr-only'>PDF</span><span aria-hidden='true'>↗</span>
+        <a
+          href={pdfUrl}
+          target='_blank'
+          rel='noopener noreferrer'
+          aria-label='新窗口打开 PDF'
+          title='新窗口打开 PDF'
+        >
+          <svg
+            width='20'
+            height='20'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='1.6'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            aria-hidden='true'
+          >
+            <path d='M14 4h6v6M20 4l-9 9M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5'
+            ></path>
+          </svg>
         </a>
-        <a class='score-download' href={pdfUrl} download={filename}>下载 PDF</a>
+        <a href={pdfUrl} download={filename} aria-label='下载 PDF' title='下载 PDF'>
+          <svg
+            width='20'
+            height='20'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='1.6'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            aria-hidden='true'
+          >
+            <path d='M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4'></path>
+          </svg>
+        </a>
       </div>
     </div>
     <p class='score-status' role='status'>正在加载乐谱…</p>
@@ -152,48 +184,40 @@ const filename = src.split('/').pop() || 'score.pdf'
     background: var(--weather-surface, hsl(var(--background)));
   }
   .score-toolbar {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 1rem;
-  }
-  .score-label {
-    font-size: 0.875rem;
-    font-weight: 500;
+    padding: 0.625rem 1rem;
   }
   .score-actions {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
+    grid-column: 3;
+    justify-self: end;
+    gap: 0.25rem;
   }
-  .score-actions a {
+  .score-actions a,
+  .score-controls button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.25rem;
+    width: 2.75rem;
     min-height: 2.75rem;
-    border-radius: 0.625rem;
-    font-size: 0.875rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+    font: inherit;
     text-decoration: none;
   }
-  .score-open {
-    color: hsl(var(--muted-foreground));
-  }
-  .score-open:hover {
+  .score-actions a:hover,
+  .score-controls button:not(:disabled):hover {
+    background: hsl(var(--primary) / 0.08);
     color: hsl(var(--primary));
   }
-  .score-download {
-    padding-inline: 1rem;
-    background: hsl(var(--primary));
-    color: hsl(var(--background));
-  }
-  .score-download:hover {
-    opacity: 0.85;
-  }
-  .score-actions a:focus-visible {
+  .score-actions a:focus-visible,
+  .score-controls button:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 3px;
   }
@@ -214,31 +238,37 @@ const filename = src.split('/').pop() || 'score.pdf'
     display: block;
   }
   .score-controls {
+    grid-column: 2;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
   }
-  .score-controls button {
-    min-height: 2.75rem;
-    border: 1px solid var(--weather-edge, hsl(var(--border)));
-    border-radius: 0.5rem;
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    padding: 0.375rem 0.75rem;
-    font: inherit;
-  }
   .score-controls button:disabled {
     opacity: 0.35;
-  }
-  .score-controls button:focus-visible {
-    outline: 2px solid hsl(var(--primary));
-    outline-offset: 2px;
   }
   .score-controls output {
     min-width: 6rem;
     text-align: center;
+  }
+  @media (max-width: 480px) {
+    .score-toolbar {
+      padding-inline: 0.5rem;
+    }
+    .score-actions,
+    .score-controls {
+      gap: 0.125rem;
+    }
+    .score-actions a,
+    .score-controls button {
+      width: 2rem;
+      min-height: 2rem;
+    }
+    .score-controls output {
+      min-width: 4.5rem;
+      font-size: 0.75rem;
+    }
   }
   .score-status {
     padding: 1rem;
