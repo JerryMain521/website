@@ -1,5 +1,5 @@
-import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import cloudflare from '@astrojs/cloudflare'
+import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import AstroPureIntegration from 'astro-pure'
 import { defineConfig, fontProviders } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
@@ -8,6 +8,7 @@ import { loadEnv } from 'vite'
 
 // Local integrations
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
+import sharedPreview from './src/plugins/shared-preview.ts'
 // Shiki
 import {
   addCollapse,
@@ -48,6 +49,9 @@ export default defineConfig({
   },
   // root: './my-project-directory',
   server: { host: true },
+  // Keep the preview URL aligned with the Cloudflare proxy and desktop manager.
+  // A busy port must fail explicitly instead of silently starting on another one.
+  vite: { server: { strictPort: true } },
 
   // [Adapter]
   // https://docs.astro.build/en/guides/deploy/
@@ -118,6 +122,7 @@ export default defineConfig({
 
   // [Integrations]
   integrations: [
+    sharedPreview(),
     // astro-pure will automatically add sitemap, mdx & unocss
     // sitemap(),
     // mdx(),

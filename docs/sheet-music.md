@@ -35,9 +35,14 @@ comment: true
 
 ## 本地测试
 
-运行 `npm run dev -- --port 4322`，访问 `/blog/music/score-pdf-demo`。
+运行 `npm run dev -- --port 4322`，访问现有乐谱文章 `/blog/notes/2026-10-25-qqq1d`，或在上位机选中文章后点击「网站预览」。
 
-测试文章位于 `src/content/blog/music/score-pdf-demo.md`，PDF 位于 `public/scores/score-pdf-demo.pdf`。
-示例文章设为 `draft: true`，仅开发模式显示，不生成生产文章页面。`public/` 中的静态 PDF 会随构建复制。
+同一项目只启动一个开发预览服务。上位机「网站预览」会验证并复用已经运行的服务，避免多个 Astro 进程同时写入 `.astro` 内容缓存而产生写入错误或文章 404。直接重复运行开发命令会提示已有服务的地址；正常退出会释放登记，异常退出后下次启动可自动恢复。
+
+指定端口被占用时会直接报错，避免自动换端口后 Cloudflare 本地代理仍连接原端口。此时可通过上位机启动预览，或为开发命令指定另一个可用端口。
+
+两页测试 PDF 位于 `public/scores/score-pdf-demo.pdf`，可用于临时草稿。草稿文章仅开发模式显示，不生成生产文章页面。`public/` 中的静态 PDF 会随构建复制。
+
+运行 `node --test scripts/shared-preview.test.mjs` 检查开发服务的重复启动、配置重载和异常退出恢复。上位机目录中的 `blog-manager/validation/preview_regression.py <网站目录>` 可用临时草稿验证保存、预览复用和 PDF 文件完整性。
 
 检查两页预览、下载、新窗口打开以及手机窄屏排版。正式发布时，新建真实乐谱文章并填写相应 PDF 路径即可。
