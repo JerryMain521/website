@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets'
-import { render, type CollectionEntry } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
 
 import { FormattedDate, Icon } from 'astro-pure/user'
 
@@ -10,7 +10,6 @@ interface Props {
 
 const { post } = Astro.props
 const { data, id } = post
-const { remarkPluginFrontmatter } = await render(post)
 ---
 
 <li class='post-card'>
@@ -25,7 +24,6 @@ const { remarkPluginFrontmatter } = await render(post)
         {data.draft && <span class='text-red-500'>(Draft) </span>}{data.title}
       </a>
     </h2>
-    <span class='card-arrow' aria-hidden='true'>↗</span>
   </div>
   <p class='card-description'>{data.description}</p>
   {
@@ -43,9 +41,6 @@ const { remarkPluginFrontmatter } = await render(post)
   }
   <div class='card-meta text-muted-foreground'>
     <FormattedDate class='card-date' date={data.updatedDate ?? data.publishDate} />
-    <span class='card-reading'
-      ><Icon name='time' class='size-3.5' />{remarkPluginFrontmatter.minutesRead}</span
-    >
     {
       data.language && (
         <span class='card-language'>
@@ -124,12 +119,6 @@ const { remarkPluginFrontmatter } = await render(post)
     outline: 2px solid hsl(var(--primary) / 0.7);
     outline-offset: 4px;
   }
-  .card-arrow {
-    flex-shrink: 0;
-    color: hsl(var(--muted-foreground));
-    font-size: 1.25rem;
-    line-height: 1.5;
-  }
   .card-description {
     position: relative;
     margin: 0;
@@ -174,7 +163,6 @@ const { remarkPluginFrontmatter } = await render(post)
     font-size: 0.75rem;
     line-height: 1.5;
   }
-  .card-reading,
   .card-language {
     display: inline-flex;
     align-items: center;
@@ -184,7 +172,7 @@ const { remarkPluginFrontmatter } = await render(post)
     .post-card {
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
-      padding-right: 3rem;
+      padding-right: 1.25rem;
     }
     .card-heading {
       grid-column: 1;
@@ -197,19 +185,15 @@ const { remarkPluginFrontmatter } = await render(post)
     .card-meta {
       grid-column: 2;
       grid-row: 1;
+      justify-self: end;
       justify-content: flex-end;
     }
     .card-tags {
       grid-column: 2;
       grid-row: 2;
+      justify-self: end;
       justify-content: flex-end;
       max-width: 15rem;
-    }
-    .card-arrow {
-      position: absolute;
-      right: 1.125rem;
-      top: 50%;
-      transform: translateY(-50%);
     }
   }
   @media (prefers-reduced-motion: reduce) {

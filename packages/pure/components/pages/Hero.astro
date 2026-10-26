@@ -10,8 +10,7 @@ interface Props {
 }
 
 const {
-  data: { title, description, draft, heroImage, publishDate, updatedDate, tags, language },
-  remarkPluginFrontmatter
+  data: { title, description, draft, heroImage, publishDate, updatedDate, tags, language }
 } = Astro.props
 
 const dateTimeOptions: Intl.DateTimeFormatOptions = {
@@ -64,11 +63,6 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
           </div>
         )
       }
-    </div>
-    {/* Times read */}
-    <div class='flex items-center gap-1'>
-      <Icon name='time' class='size-5' />
-      {remarkPluginFrontmatter.minutesRead}
     </div>
     {
       // Language
