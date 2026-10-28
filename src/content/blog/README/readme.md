@@ -481,4 +481,197 @@ class='flex flex-row items-center gap-x-3 rounded-full border bg-background px-4
 ```bash
 ./src/pages/projects/index.astro
 ```
-页面分为三部分**My Repositories**,**Friends Repositories**和**SponsorShip**
+页面分为三部分：**My Repositories**、**Friends Repositories**和**Sponsorship**。前两部分展示项目，最后一部分是赞助入口和赞助名单，下面分别说明。
+
+- My Repositories，即你自己的项目：
+
+这一部分使用`ProjectSection`组件，找到对应的`projects`数组，就可以修改项目名称、介绍和链接。以我的`SkyBlock`为例：
+
+```astro
+<h2 id='My Repositories'>My Repositories</h2>
+<ProjectSection
+  projects={[
+    {
+      name: 'SkyBlock',
+      description: 'A Minecraft plugin called SkyBlock',
+      links: [
+        { type: 'github', href: 'https://github.com/JerryMain521/SkyBlock' },
+        { type: 'release', href: 'https://github.com/JerryMain521/SkyBlock/releases' }
+      ]
+    }
+  ]}
+/>
+```
+
+`name`是项目名称，`description`是简介，`links`则是卡片下方的一组链接。想要展示多个项目，就在`projects`数组里继续添加对象，注意对象之间用英文逗号隔开。
+
+这里的`type`用于选择链接的图标，目前组件中定义了四种：
+
+| type | 对应入口 |
+| --- | --- |
+| `github` | 源码仓库 |
+| `site` | 项目网站 |
+| `doc` | 使用文档 |
+| `release` | 发布页面 |
+
+比如给项目增加一个文档入口，可以在`links`中添加：
+
+```typescript
+{ type: 'doc', href: 'https://example.com/docs' }
+```
+
+当然`href`要换成你自己的地址。还有一个小细节：**项目名称点击后会跳转到`links`中的第一个地址**，因此每个项目至少保留一条链接，并把你最希望别人访问的地址放在第一位。
+
+如果想给项目卡片加上配图，可以将图片放进：
+
+```text
+./src/assets/projects/
+```
+
+然后在对应的项目对象中增加`image`字段。比如使用这个目录中已有的`1.png`：
+
+```typescript
+{
+  image: '1.png',
+  name: 'SkyBlock',
+  description: 'A Minecraft plugin called SkyBlock',
+  links: [
+    { type: 'github', href: 'https://github.com/JerryMain521/SkyBlock' }
+  ]
+}
+```
+
+这里填的是**文件名**，不需要写完整路径；不想显示配图，就省略`image`字段。建议先用`.png`、`.jpg`或`.webp`图片，文件名和扩展名都要与实际文件一致，否则构建时会报错。
+
+- Friends Repositories，即朋友的项目：
+
+它与上面的写法相同，只是放在另一个标题下面。例如：
+
+```astro
+<h2 id='Friends Repositories'>Friends Repositories</h2>
+<ProjectSection
+  projects={[
+    {
+      name: 'ByteString',
+      description: "ByteString's personal blog built with Astro",
+      links: [{ type: 'site', href: 'https://bytestring.top' }]
+    }
+  ]}
+/>
+```
+
+这里展示的是博客主页，所以用了`site`图标；如果展示朋友的开源仓库，换成`github`和对应的仓库地址即可。
+
+这两个部分的卡片都来自同一个文件：
+
+```text
+./src/components/projects/ProjectSection.astro
+```
+
+修改项目内容只需要编辑`projects`数组。如果要调整卡片本身的排版，才需要打开这个组件。
+
+另外，页面上方还有一个`headings`数组，用于生成目录：
+
+```typescript
+const headings = [
+  { depth: 2, slug: 'My Repositories', text: 'My Repositories' },
+  { depth: 2, slug: 'Friends Repositories', text: 'Friends Repositories' },
+  { depth: 2, slug: 'sponsorship', text: 'Sponsorship' }
+]
+```
+
+如果你想把标题改成中文，可以修改`<h2>`里面的文字和对应的`text`；`slug`要与该标题的`id`保持一致，目录才能跳转到正确的位置。删除整个板块时，也记得删除对应的目录项。
+
+- Sponsorship，即赞助区域：
+
+首先是赞助说明，找到`<h2 id='sponsorship'>`后面的段落，将其中的英文介绍改成你自己的话即可。
+
+接下来是收款码。文件开头有两行图片导入：
+
+```typescript
+import alipay from '@/assets/alipay-qrcode.jpg'
+import wechat from '@/assets/wechat-qrcode.jpg'
+```
+
+它们对应的文件分别是：
+
+```text
+./src/assets/alipay-qrcode.jpg
+./src/assets/wechat-qrcode.jpg
+```
+
+与前面的头像替换类似，直接用自己的图片替换即可。如果文件名或扩展名变了，也要修改上面的导入路径。**替换后记得自己扫码核对收款人**，别把模板里的收款码留在了自己的网站上~~替别人开通赞助通道~~。
+
+页面通过下面这个组件显示收款方式：
+
+```astro
+<Sponsorship
+  methods={[
+    { name: 'WeChat', icon: 'wechat-pay', image: wechat },
+    { name: 'Alipay', icon: 'alipay', image: alipay }
+  ]}
+/>
+```
+
+如果只保留其中一种，就删除`methods`中另一条记录，并移除文件开头不再使用的图片导入。收款码的模糊效果和鼠标悬停效果写在`src/components/projects/Sponsorship.astro`中，想修改展示方式可以从这里入手。
+
+收款码下方还有一段联系方式。目前页面使用`atob()`解码一段文字，再弹出微信号。如果你不想处理编码，也可以将那一整段`<p>...</p>`换成普通联系方式，比如：
+
+```astro
+<p>
+  赞助后欢迎留言，也可以通过
+  <a href='mailto:hello@example.com'>邮箱</a>
+  联系我。
+</p>
+```
+
+这里的邮箱也要换成自己的。原来的编码只是改变了文字的存放形式，访问者仍然可以还原出内容，所以只放你愿意公开的联系方式即可。
+
+最后是赞助名单，找到`Sponsors`组件：
+
+```astro
+<Sponsors
+  progressMax={50}
+  sponsors={[
+    { name: '陌伟', platform: 'Wechat', amount: 1, date: '2026-04-28' }
+  ]}
+/>
+```
+
+各个字段的含义如下：
+
+| 字段 | 含义 |
+| --- | --- |
+| `name` | 赞助者的展示名称 |
+| `platform` | 赞助渠道，可省略 |
+| `amount` | 赞助金额，使用数字填写，当前组件显示人民币符号 |
+| `date` | 赞助日期 |
+| `progressMax` | 单张卡片背景进度条达到满格时对应的金额 |
+
+比如这里的`progressMax={50}`，表示单笔金额为50元时，背景进度条达到满格；超过这个数值也只显示满格。它只是展示效果，并不是收款上限，也不会自动统计总额。
+
+这份名单需要手动维护，收到赞助后，再往`sponsors`数组中添加一条记录即可。展示之前记得确认对方希望使用的名称。如果暂时没有赞助，可以使用`sponsors={[]}`，或者先移除名单组件。
+
+如果你不准备开放赞助，可以将整个赞助区域删除，同时移除`headings`里的对应目录项、文件开头的`Sponsors`、`Sponsorship`和收款码导入。前面About页面里的`Sponsor Me`按钮也指向这里，记得一起删除或修改链接，避免点过来却找不到位置。
+
+## 修改后的本地检查
+
+改完这些内容后，先在项目根目录打开终端，启动本地开发服务：
+
+```bash
+bun run dev
+```
+
+如果是第一次运行项目，需要先执行`bun install`安装依赖。启动后，打开终端输出的本地地址，就可以一边修改一边查看效果。
+
+可以按照首页、About、Links、Projects的顺序看一遍，主要检查图片是否显示、链接是否指向自己的地址，以及目录能否跳转。切换一下深浅色主题，再缩窄浏览器窗口看看，也能发现一些只在特定情况下出现的排版问题。
+
+最后再执行一次构建：
+
+```bash
+bun run build
+```
+
+当前项目的构建命令会依次执行主题检查、Astro检查和正式构建。如果提示图片不存在、导入路径错误或类型不匹配，可以根据终端给出的文件位置修改，再重新运行。
+
+到这里，从图标、头像、基本信息到几个主要页面的客制化就介绍完了。后面再添加自己的文章和项目，这个网站就慢慢有了自己的样子。至于频繁更新这件事，~~下次一定~~。
