@@ -5,9 +5,9 @@ summary: 暂留存，目前没有明显的解决方案。
 category: 睡眠与身体状态
 status: 待反馈
 date: '2026-10-20'
-updatedDate: '2026-10-25'
+updatedDate: '2026-10-31'
 documented: false
-draft: true
+draft: false
 related:
   - blood-glucose-fluctuations
   - fasted-milk-tea
