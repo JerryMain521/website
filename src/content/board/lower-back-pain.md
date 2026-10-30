@@ -5,12 +5,11 @@ summary: 群友（2）建议先去医院明确原因，再讨论康复；猜测�
 category: 疼痛与康复
 status: 待反馈
 date: '2026-10-19'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
-related:
-  - romanian-deadlift
-  - deadlift-back-pain
+related: []
+stage: organizing
 ---
 
 ## Current summary

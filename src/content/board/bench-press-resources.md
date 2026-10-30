@@ -5,13 +5,13 @@ summary: 群友（2）推荐去B站搜索凯圣王卧推；讨论肩胛联动时
 category: 动作技术
 status: 待补充
 date: '2026-10-19'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - shoulder-blade
-  - serratus-activation
   - chest-press-asymmetry
+  - shoulder-blade
+stage: organizing
 ---
 
 ## Current summary

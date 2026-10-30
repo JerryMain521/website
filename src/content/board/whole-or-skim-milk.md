@@ -5,13 +5,13 @@ summary: 群友（2）提到两类奶的热量、脂溶性维生素及口味，�
 category: 营养与补剂
 status: 待补充
 date: '2026-10-19'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - milk-intake
   - milk-and-acne
-  - acne-medication-discussion
+  - milk-intake
+stage: organizing
 ---
 
 ## Current summary

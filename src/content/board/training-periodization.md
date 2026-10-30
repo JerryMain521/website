@@ -5,13 +5,14 @@ summary: 群友（2）称增肌的统计差异不大；对训练水平较高、�
 category: 训练方法
 status: 待补充
 date: '2026-10-20'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - warm-up
   - power-clean-readiness
   - romanian-deadlift
+  - warm-up
+stage: organizing
 ---
 
 ## Current summary

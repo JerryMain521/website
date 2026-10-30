@@ -5,12 +5,13 @@ summary: 群友（2）在交叉话题之后回答“算”，提到可搭配食�
 category: 营养与补剂
 status: 待补充
 date: '2026-10-19'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - protein-powder-timing
   - protein-powder-selection
+  - protein-powder-timing
+stage: organizing
 ---
 
 ## Current summary

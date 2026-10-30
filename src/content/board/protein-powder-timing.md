@@ -5,12 +5,13 @@ summary: 群友（2）说蛋白粉本质是蛋白质补充，饮用时间没有�
 category: 营养与补剂
 status: 待补充
 date: '2026-10-19'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
   - incomplete-protein
   - protein-powder-selection
+stage: organizing
 ---
 
 ## Current summary

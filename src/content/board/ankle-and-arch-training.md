@@ -5,13 +5,14 @@ summary: 群友（2）分享脚踝疼痛位置、崴脚恢复、踝关节不稳�
 category: 疼痛与康复
 status: 待反馈
 date: '2026-10-19'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
   - hip-abduction-cramp
+stage: organizing
 ---
-
+（链接）
 ## Current summary
 
 群友（2）分享脚踝疼痛位置、崴脚恢复、踝关节不稳定强化和足踝功能强化等文章，并补充踝关节资料文件。

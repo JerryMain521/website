@@ -5,13 +5,14 @@ summary: 群里询问睡眠后得知夜睡约6小时，提出睡少、糖和血�
 category: 睡眠与身体状态
 status: 待反馈
 date: '2026-10-20'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
+  - blood-glucose-fluctuations
   - sleep-difficulties
   - sleepiness-after-running
-  - blood-glucose-fluctuations
+stage: organizing
 ---
 
 ## Current summary

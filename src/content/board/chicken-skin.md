@@ -5,13 +5,14 @@ summary: 群友（8）回答鸡皮富含脂肪，并表示不确定；群友（2
 category: 饮食与体重管理
 status: 待补充
 date: '2026-10-20'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - snacking-during-fat-loss
   - cheat-meal-frequency
   - post-meal-vascularity
+  - snacking-during-fat-loss
+stage: organizing
 ---
 
 ## Current summary

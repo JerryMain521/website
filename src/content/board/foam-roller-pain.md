@@ -5,13 +5,14 @@ summary: 群友（2）不主张只做静止按压，提出配合身体移动或�
 category: 恢复与放松
 status: 待补充
 date: '2026-10-17'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - recovery-and-supplements
   - foam-roller
   - massage-gun
+  - recovery-and-supplements
+stage: organizing
 ---
 
 ## Current summary

@@ -5,14 +5,15 @@ summary: 群友（2）分享自用产品“澳都塞斯分离”，随后又说�
 category: 营养与补剂
 status: 待补充
 date: '2026-10-19'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - protein-powder-timing
   - incomplete-protein
+  - protein-powder-timing
+stage: organizing
 ---
-
+奥杜塞斯
 ## Current summary
 
 群友（2）分享自用产品“澳都塞斯分离”，随后又说可能不是分离，并以喝过三桶说明自己的体验。

@@ -5,12 +5,13 @@ summary: 群友（2）表示不知道完整答案；群友（20）提到正常�
 category: 睡眠与身体状态
 status: 待补充
 date: '2026-10-20'
-updatedDate: '2026-10-22'
+updatedDate: '2026-10-31'
 documented: false
 draft: false
 related:
-  - fasted-milk-tea
   - blood-pressure
+  - fasted-milk-tea
+stage: organizing
 ---
 
 ## Current summary
