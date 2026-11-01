@@ -5,13 +5,13 @@
 'category': '训练方法'
 'status': '待补充'
 'date': '2026-10-25'
-'updatedDate': '2026-10-29'
-'stage': 'collected'
+'updatedDate': '2026-11-01'
+'stage': 'organizing'
 'documented': false
 'draft': false
 'related':
-  - 'leg-training-tutorials'
-  - 'training-periodization'
+  - leg-training-tutorials
+  - training-periodization
 ---
 
 <!-- archive-import: Q64 -->

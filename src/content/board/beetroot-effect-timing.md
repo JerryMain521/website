@@ -5,13 +5,12 @@
 'category': '营养与补剂'
 'status': '待补充'
 'date': '2026-10-21'
-'updatedDate': '2026-10-29'
-'stage': 'collected'
+'updatedDate': '2026-11-01'
+'stage': 'organizing'
 'documented': false
 'draft': false
 'related':
-  - 'beetroot-powder-dose'
-  - 'recovery-and-supplements'
+  - beetroot-powder-dose
 ---
 
 <!-- archive-import: Q56 -->

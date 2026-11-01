@@ -5,13 +5,12 @@
 'category': '训练方法'
 'status': '待补充'
 'date': '2026-10-25'
-'updatedDate': '2026-10-29'
-'stage': 'collected'
+'updatedDate': '2026-11-01'
+'stage': 'organizing'
 'documented': false
 'draft': false
 'related':
-  - 'squats-and-leg-extensions'
-  - 'cpt-learning-path'
+  - squats-and-leg-extensions
 ---
 
 <!-- archive-import: Q65 -->

@@ -5,13 +5,11 @@
 'category': '饮食与体重管理'
 'status': '待补充'
 'date': '2026-10-22'
-'updatedDate': '2026-10-29'
-'stage': 'collected'
+'updatedDate': '2026-11-01'
+'stage': 'organizing'
 'documented': false
 'draft': false
-'related':
-  - 'meat-and-protein-intake'
-  - 'body-composition'
+'related': []
 ---
 
 <!-- archive-import: Q62 -->
