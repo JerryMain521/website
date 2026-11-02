@@ -5,14 +5,18 @@ summary: 群友（8）说自己醒后酸痛，并补充当天基本躺着、没�
 category: 恢复与放松
 status: 待反馈
 date: '2026-10-17'
-updatedDate: '2026-10-31'
+updatedDate: '2026-11-02'
 documented: false
 draft: false
 related:
   - foam-roller-pain
   - foam-roller
-  - recovery-and-supplements
 stage: organizing
 ---
-来自维基百科：
+DOMS，延迟性肌肉酸痛，搜索自维基百科：
+
 ![图片说明](./images/image-b188beb75eb7.png)
+
+同时附上原文链接：
+
+[【科普园地】 | 延迟性肌肉酸痛 —— 运动后酸痛的真相](https://mp.weixin.qq.com/s/ofzUE6238K_9Bz8DVt0Dyg)

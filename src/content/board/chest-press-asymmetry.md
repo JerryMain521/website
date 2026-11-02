@@ -5,13 +5,13 @@ summary: 群友（2）建议先检查动作和手的位置，分享自己对镜�
 category: 动作技术
 status: 待反馈
 date: '2026-10-19'
-updatedDate: '2026-10-31'
+updatedDate: '2026-11-02'
 documented: false
 draft: false
 related:
   - bench-press-resources
-  - serratus-activation
   - shoulder-blade
 stage: organizing
 ---
-（保留状态）
+省流：自己对着镜子改去。
+![图片说明](./images/image-c7287888846f.png)

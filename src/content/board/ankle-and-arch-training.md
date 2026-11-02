@@ -5,46 +5,33 @@ summary: 群友（2）分享脚踝疼痛位置、崴脚恢复、踝关节不稳�
 category: 疼痛与康复
 status: 待反馈
 date: '2026-10-19'
-updatedDate: '2026-10-31'
+updatedDate: '2026-11-02'
 documented: false
 draft: false
-related:
-  - hip-abduction-cramp
+related: []
 stage: organizing
 ---
-（链接）
-## Current summary
+> 这里贴了五篇原文：
+>
+> 1. [根据脚踝疼痛位置，判断脚踝具体问题（第一部分）](https://mp.weixin.qq.com/s/Xch7y1LRRFf3LOsakhMWoA)
+>
+> 2. [根据脚踝疼痛位置，判断脚踝具体问题（第二部分）​](https://mp.weixin.qq.com/s/emwgRqQgAWKToBIFhM2ldw)
+> 
+> 3. [崴脚后的恢复训练](https://mp.weixin.qq.com/s/XNAzJQ4GzPnFkQo3zr4new)
+>
+> 4. [踝关节不稳定的强化训练](https://mp.weixin.qq.com/s/ZT62j_jeVuOaY0qxzT2iTQ)
+>
+> 5. [足部+脚踝功能强化（第二部分）](https://mp.weixin.qq.com/s/3EX_d2HjsQYy4VGQ7eRjjA)
 
-群友（2）分享脚踝疼痛位置、崴脚恢复、踝关节不稳定强化和足踝功能强化等文章，并补充踝关节资料文件。
+另外更详细的内容可以参考教科书：
 
-> Community discussion notes · Not a complete guide
+![图片说明](./images/image-e2799ee60cae.jpg)
 
-## Background
+可以通过下方的网盘链接获取：
 
-足弓、踝关节怎么练？老崴脚、走路不稳怎么办？
-
-首次记录：2026-10-19 具体时间未显示。
-
-<!-- archive-import: Q38 -->
-
-## Imported discussion
-
-### Opening excerpt · 2026-10-19 · Time not shown · #1084
-
-> 群主可以说一些足弓方面的吗，或者踝关节训练，老是崴脚走路不稳咋弄\[可怜\]\[可怜\]\[可怜\]
-
-### Group response · Editorial summary
-
-群友（2）分享脚踝疼痛位置、崴脚恢复、踝关节不稳定强化和足踝功能强化等文章，并补充踝关节资料文件。
-
-讨论状态：只有资料线索；没有完整动作方案。
-
-## Open questions
-
-文章和文件正文未读取；目前不能据标题生成训练处方。
-
-## Archive source
-
-来源：微信「运科交流」2026-10-16—2026-10-20 文字归档。原审核编号：Q38。原归档消息 #1084—#1116（范围内含交叉话题，以上答复为归并转述）。
-
-问题标题与群内答复经过整理；发言人使用统一匿名编号。群友意见未经外部事实核查，有回复不代表问题已解决。未显示的时分不推测；文件未读取、语音未转写，图片与合并聊天仅保留已归档信息。
+```
+通过百度网盘分享的文件：48.踝关节功能....pdf
+链接：https://pan.baidu.com/s/1CWmvSrVttFISW12jIU7-Eg 
+提取码：sULf 
+复制这段内容打开「百度网盘APP 即可获取」
+```
