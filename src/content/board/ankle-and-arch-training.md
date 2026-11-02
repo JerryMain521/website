@@ -6,10 +6,10 @@ category: 疼痛与康复
 status: 待反馈
 date: '2026-10-19'
 updatedDate: '2026-11-02'
-documented: false
+documented: true
 draft: false
 related: []
-stage: organizing
+stage: completed
 ---
 > 这里贴了五篇原文：
 >

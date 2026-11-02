@@ -6,11 +6,11 @@ category: 训练方法
 status: 待补充
 date: '2026-10-20'
 updatedDate: '2026-11-02'
-documented: false
+documented: true
 draft: false
 related:
   - power-clean-readiness
-stage: organizing
+stage: completed
 ---
 
 ![图片说明](./images/image-b4582d5ef967.png)

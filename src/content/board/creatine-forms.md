@@ -6,10 +6,12 @@ category: 营养与补剂
 status: 待补充
 date: '2026-10-19'
 updatedDate: '2026-11-02'
-documented: false
+documented: true
 draft: false
 related: []
-stage: organizing
+stage: completed
 ---
 
 ![图片说明](./images/image-2fda21e7843d.png)
+
+不过群主说他讲的太草率了，他说可以参考B站视频——[一口气讲完所有肌酸谣言｜90%的人都在被误导！运动学博士生的深度解读](https://www.bilibili.com/video/BV1uu4y1G7PR/?spm_id_from=333.337.search-card.all.click)

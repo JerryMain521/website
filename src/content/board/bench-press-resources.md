@@ -6,12 +6,11 @@ category: 动作技术
 status: 待补充
 date: '2026-10-19'
 updatedDate: '2026-11-02'
-documented: false
+documented: true
 draft: false
 related:
-  - chest-press-asymmetry
   - shoulder-blade
-stage: organizing
+stage: completed
 ---
 
 ![图片说明](./images/image-7dedccb902aa.png)

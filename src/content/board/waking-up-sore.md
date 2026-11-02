@@ -6,12 +6,11 @@ category: 恢复与放松
 status: 待反馈
 date: '2026-10-17'
 updatedDate: '2026-11-02'
-documented: false
+documented: true
 draft: false
 related:
-  - foam-roller-pain
   - foam-roller
-stage: organizing
+stage: completed
 ---
 DOMS，延迟性肌肉酸痛，搜索自维基百科：
 

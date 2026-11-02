@@ -6,10 +6,10 @@ category: 饮食与体重管理
 status: 待补充
 date: '2026-10-20'
 updatedDate: '2026-11-02'
-documented: false
+documented: true
 draft: false
 related: []
-stage: organizing
+stage: completed
 ---
 
 ![图片说明](./images/image-f013d625615f.png)
