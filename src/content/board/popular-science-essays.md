@@ -1,7 +1,7 @@
 ---
 number: '069'
 title: '科普杂文'
-summary: ''
+summary: '这个很者作懒，什么都没有留下。'
 category: '其他讨论'
 status: '待补充'
 date: '2026-11-04'
