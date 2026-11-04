@@ -9,7 +9,7 @@ export async function getForumTopics() {
       id: entry.id,
       entry
     }))
-    .sort((a, b) => b.date.localeCompare(a.date) || Number(b.number) - Number(a.number))
+    .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.date.localeCompare(a.date) || Number(b.number) - Number(a.number))
 }
 
 // UI labels stay separate from the original Chinese discussion content.

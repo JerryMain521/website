@@ -34,7 +34,7 @@ const related = forumTopics.filter((item) => topic.related.includes(item.id))
   <Fragment slot='header'>
     <div class='article-info max-lg:mx-auto'>
       <div class='flex flex-wrap gap-x-4 gap-y-2 text-xs leading-6 text-muted-foreground'>
-        <span>Board / #{topic.number}</span>
+        <span>{topic.hideNumber ? 'Board' : `Board / #${topic.number}`}</span>
         <div class='flex flex-wrap items-center gap-1'>
           <Icon name='calendar' class='size-5' />
           <span>First discussed <time datetime={topic.date}>{boardDate(topic.date)}</time></span>

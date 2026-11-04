@@ -49,17 +49,18 @@ const stages = ['collected', 'organizing', 'completed'] as const
                 data-stage={topic.stage}
                 href={`/board/${topic.id}`}
               >
-                <span
+                {!topic.hideNumber && <span
                   class='board-state-marker'
                   aria-label={`Record ${topic.number}, ${boardStageLabels[topic.stage]}`}
                   title={boardStageLabels[topic.stage]}
                 >
                   {topic.number}
-                </span>
+                </span>}
                 <div class='board-row-content'>
                   <div class='board-row-title'>
                     <>
                       <h2>{topic.title}</h2>
+                      {topic.pinned && <span class='board-label'>Pinned</span>}
                       <span class='board-label'>{boardLabel(topic.category)}</span>
                       <span class='forum-status' data-status={topic.status}>
                         {boardLabel(topic.status)}

@@ -79,6 +79,8 @@ const board = defineCollection({
     updatedDate: boardDateSchema.optional(),
     stage: z.enum(['collected', 'organizing', 'completed']).optional(),
     documented: z.boolean().default(false),
+    pinned: z.boolean().default(false),
+    hideNumber: z.boolean().default(false),
     draft: z.boolean().default(false),
     related: z.array(z.string()).default([])
   }).transform((data) => {
