@@ -45,10 +45,11 @@ const stages = ['collected', 'organizing', 'completed'] as const
               data-stage={topic.stage}
             >
               <a
-                class='board-row'
+                class:list={['board-row', { 'board-row-gold': topic.id === 'popular-science-essays' }]}
                 data-stage={topic.stage}
                 href={`/board/${topic.id}`}
               >
+                {topic.hideNumber && topic.pinned && <span class='board-state-marker'>Pinned</span>}
                 {!topic.hideNumber && <span
                   class='board-state-marker'
                   aria-label={`Record ${topic.number}, ${boardStageLabels[topic.stage]}`}
@@ -60,11 +61,13 @@ const stages = ['collected', 'organizing', 'completed'] as const
                   <div class='board-row-title'>
                     <>
                       <h2>{topic.title}</h2>
-                      {topic.pinned && <span class='board-label'>Pinned</span>}
-                      <span class='board-label'>{boardLabel(topic.category)}</span>
-                      <span class='forum-status' data-status={topic.status}>
-                        {boardLabel(topic.status)}
-                      </span>
+                      {topic.pinned && !topic.hideNumber && <span class='board-label'>Pinned</span>}
+                      {topic.id !== 'popular-science-essays' && <>
+                        <span class='board-label'>{boardLabel(topic.category)}</span>
+                        <span class='forum-status' data-status={topic.status}>
+                          {boardLabel(topic.status)}
+                        </span>
+                      </>}
                     </>
                   </div>
                   <div class='board-row-meta'>

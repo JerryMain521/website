@@ -676,6 +676,14 @@
 .board-row:hover h2 {
   color: hsl(var(--primary));
 }
+.board-row-gold { background: rgba(173, 133, 66, 0.16); }
+.dark .board-row-gold { background: rgba(157, 123, 70, 0.24); }
+.board-row-gold .board-state-marker { color: #87602a; }
+.dark .board-row-gold .board-state-marker { color: #e6c58c; }
+.board-row-gold:hover,
+.board-row-gold:focus-visible { background: rgba(173, 133, 66, 0.22); }
+.dark .board-row-gold:hover,
+.dark .board-row-gold:focus-visible { background: rgba(157, 123, 70, 0.31); }
 .board-row-content {
   display: flex;
   align-items: center;
