@@ -24,6 +24,10 @@ const stages = ['collected', 'organizing', 'completed'] as const
           <button type='button' data-view='all' aria-pressed='true'
             >All records <span class='board-counter'>{forumTopics.length}</span></button
           >
+          <button type='button' data-view='pinned' aria-pressed='false'>
+            <span class='board-stage-dot board-pinned-dot' aria-hidden='true'></span>
+            Pinned <span class='board-counter'>{forumTopics.filter((topic) => topic.pinned).length}</span>
+          </button>
           {stages.map((stage) => (
             <button type='button' data-view={stage} aria-pressed='false'>
               <span class='board-stage-dot' data-stage={stage} aria-hidden='true'></span>
@@ -43,9 +47,10 @@ const stages = ['collected', 'organizing', 'completed'] as const
               data-date={topic.date}
               data-number={topic.number}
               data-stage={topic.stage}
+              data-pinned={String(topic.pinned)}
             >
               <a
-                class:list={['board-row', { 'board-row-gold': topic.id === 'popular-science-essays' }]}
+                class:list={['board-row', { 'board-row-gold': topic.pinned && topic.hideNumber }]}
                 data-stage={topic.stage}
                 href={`/board/${topic.id}`}
               >
@@ -62,7 +67,7 @@ const stages = ['collected', 'organizing', 'completed'] as const
                     <>
                       <h2>{topic.title}</h2>
                       {topic.pinned && !topic.hideNumber && <span class='board-label'>Pinned</span>}
-                      {topic.id !== 'popular-science-essays' && <>
+                      {!(topic.pinned && topic.hideNumber) && <>
                         <span class='board-label'>{boardLabel(topic.category)}</span>
                         <span class='forum-status' data-status={topic.status}>
                           {boardLabel(topic.status)}
@@ -100,7 +105,7 @@ const stages = ['collected', 'organizing', 'completed'] as const
   function update() {
     let count = 0
     rows.forEach((row) => {
-      row.hidden = !(view === 'all' || row.dataset.stage === view)
+      row.hidden = !(view === 'all' || (view === 'pinned' ? row.dataset.pinned === 'true' : row.dataset.stage === view))
       if (!row.hidden) count++
       list.append(row)
     })

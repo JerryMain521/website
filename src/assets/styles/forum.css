@@ -649,6 +649,8 @@
   border-radius: 50%;
   background: var(--board-number-color);
 }
+.board-stage-dot.board-pinned-dot { background: #b68a4b; }
+.dark .board-stage-dot.board-pinned-dot { background: #e6c58c; }
 .board-row {
   display: flex;
   align-items: center;
