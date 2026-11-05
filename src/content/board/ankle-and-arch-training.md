@@ -1,11 +1,11 @@
 ---
 number: "043"
-title: 足弓、踝关节怎么练？老崴脚、走路不稳怎么办？
+title: 足弓、踝关节怎么练？老崴脚、走路不稳怎么办？扁平足怎么办？
 summary: 群友（2）分享脚踝疼痛位置、崴脚恢复、踝关节不稳定强化和足踝功能强化等文章，并补充踝关节资料文件。
 category: 疼痛与康复
 status: 待反馈
 date: '2026-10-19'
-updatedDate: '2026-11-02'
+updatedDate: '2026-11-05'
 documented: true
 draft: false
 related: []
@@ -22,6 +22,8 @@ stage: completed
 > 4. [踝关节不稳定的强化训练](https://mp.weixin.qq.com/s/ZT62j_jeVuOaY0qxzT2iTQ)
 >
 > 5. [足部+脚踝功能强化（第二部分）](https://mp.weixin.qq.com/s/3EX_d2HjsQYy4VGQ7eRjjA)
+>
+> 6. [改善扁平足，需要整合足与髋](https://mp.weixin.qq.com/s/sNNvxPXI7kEtAJD8vIp_NQ)
 
 另外更详细的内容可以参考教科书：
 
