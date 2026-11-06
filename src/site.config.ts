@@ -17,8 +17,8 @@ export const theme: ThemeUserConfig = {
   socialCard: '/images/social-card.png',
   /** Specify the default language for this site. */
   locale: {
-    lang: 'en-US',
-    attrs: 'en_US',
+    lang: 'zh-CN',
+    attrs: 'zh_CN',
     // Date locale
     dateLocale: 'en-US',
     dateOptions: {
