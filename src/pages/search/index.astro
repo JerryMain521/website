@@ -4,6 +4,8 @@ import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import { integ } from '@/site-config'
 
+if (!integ.pagefind) return Astro.redirect('/blog', 302)
+
 const meta = {
   description: 'Search relative posts of the whole blog',
   title: 'Search'
@@ -18,16 +20,8 @@ const meta = {
     </div>
 
     <div id='content' class='animate'>
-      {
-        integ.pagefind ? (
-          <>
-            <p>Enter a search term or phrase to search the blog.</p>
-            <PFSearch />
-          </>
-        ) : (
-          <p>Pagefind is disabled.</p>
-        )
-      }
+      <p>Enter a search term or phrase to search the blog.</p>
+      <PFSearch />
     </div>
   </main>
 </PageLayout>

@@ -119,7 +119,8 @@ export const integ: IntegrationUserConfig = {
     cacheAvatar: false
   },
   // [Search]
-  pagefind: true,
+  // Controls the navigation entry, search page, and generated search index.
+  pagefind: false,
   // Add a random quote to the footer (default on homepage footer)
   // See: https://astro-pure.js.org/docs/integrations/advanced#web-content-render
   // [Quote]
