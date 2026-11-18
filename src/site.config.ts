@@ -52,6 +52,7 @@ export const theme: ThemeUserConfig = {
   header: {
     menu: [
       { title: 'Blog', link: '/blog' },
+      { title: 'Board', link: '/board' },
       { title: 'Docs', link: '/docs' },
       { title: 'Projects', link: '/projects' },
       { title: 'Links', link: '/links' },
@@ -119,8 +120,7 @@ export const integ: IntegrationUserConfig = {
     cacheAvatar: false
   },
   // [Search]
-  // Controls the navigation entry, search page, and generated search index.
-  pagefind: false,
+  pagefind: true,
   // Add a random quote to the footer (default on homepage footer)
   // See: https://astro-pure.js.org/docs/integrations/advanced#web-content-render
   // [Quote]

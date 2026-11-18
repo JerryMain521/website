@@ -32,16 +32,12 @@ import { Icon } from '../user'
             </a>
           ))
         }
-        {
-          config.integ.pagefind && (
-            <div class='flex w-full grow flex-row justify-end gap-x-3 sm:w-fit sm:gap-x-5'>
-              <a class='px-1 py-2 transition-none sm:px-2' href='/search' title='Search'>
-                <span class='sr-only'>Search</span>
-                <Icon name='search' class='size-5' />
-              </a>
-            </div>
-          )
-        }
+        <div class='flex w-full grow flex-row justify-end gap-x-3 sm:w-fit sm:gap-x-5'>
+          <a class='px-1 py-2 transition-none sm:px-2' href='/search' title='Search'>
+            <span class='sr-only'>Search</span>
+            <Icon name='search' class='size-5' />
+          </a>
+        </div>
       </div>
     </div>
 
