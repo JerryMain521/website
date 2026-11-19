@@ -11,6 +11,8 @@ stage: organizing
 related: []
 documented: false
 ---
+[PAPE Video](https://weixin.qq.com/sph/ArgEeeSP5M)
+
 [Sports Medicine｜激活后几分钟表现最好？基于个体化数据的激活后表现增强的幅度-时间模型](https://mp.weixin.qq.com/s/--A51zTryFHxY8B9yrACCA)
 
 [PAPE](https://share.mubu.com/doc/5sBRGycAnxI)
