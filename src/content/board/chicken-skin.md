@@ -1,11 +1,11 @@
 ---
 number: "047"
 title: 减脂餐里的鸡腿为什么常去皮？
-summary: 群友（8）回答鸡皮富含脂肪，并表示不确定；群友（2）随后表示认可。
+summary: 我不到啊，我感觉鸡腿皮十分的皓齿😋
 category: 饮食与体重管理
 status: 待补充
 date: '2026-10-20'
-updatedDate: '2026-11-02'
+updatedDate: '2026-11-19'
 documented: true
 draft: false
 related: []
