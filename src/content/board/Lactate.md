@@ -11,7 +11,7 @@ draft: false
 related: []
 stage: organizing
 ---
-<img src="images/11.24乳酸.png" width="100" alt="群聊截图喵">
+<img src="./images/11.24乳酸.png" width="100" alt="群聊截图喵">
 
 ![群聊截图喵](./images/11.24乳酸.png)
 
