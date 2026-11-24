@@ -11,8 +11,6 @@ draft: false
 related: []
 stage: organizing
 ---
-<img src="./images/11.24乳酸.png" width="100" alt="群聊截图喵">
-
 ![群聊截图喵](./images/11.24乳酸.png)
 
 [wx公众号 乳酸 ：从代谢产物到运动信号分子](https://mp.weixin.qq.com/s/AQsJbxx4W10R_-tvyDpI-w)

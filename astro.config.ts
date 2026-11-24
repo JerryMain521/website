@@ -8,6 +8,7 @@ import { loadEnv } from 'vite'
 
 // Local integrations
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
+import rehypeBoardImages from './src/plugins/rehype-board-images.ts'
 import sharedPreview from './src/plugins/shared-preview.ts'
 // Shiki
 import {
@@ -87,7 +88,8 @@ export default defineConfig({
           properties: { className: ['anchor'] },
           content: { type: 'text', value: '#' }
         }
-      ]
+      ],
+      rehypeBoardImages
     ],
     // https://docs.astro.build/en/guides/syntax-highlighting/
     shikiConfig: {
